@@ -36,6 +36,7 @@ char* getNextPermut(char* permut) {
 	char next;
 	while (tail > 0) {
 		if (nextPermut[tail - 1] < nextPermut[tail]) {
+			/* searching minimal number at the tail that greater head's end */
 			next = -1;
 			for (i = tail; i < strlen(nextPermut); i++) {
 				if (((next == -1) || (nextPermut[i] < nextPermut[next])) &&
@@ -77,9 +78,8 @@ int main() {
 	int times;
 	fscanf(in, "%d ", &times);
 
-	int i;
 	char* nextPermut;
-	for (i = 0; i < times; i++) {
+	while(times) {
 		nextPermut = getNextPermut(permut);
 		if (strcmp(permut, nextPermut) == 0) {
 			break;
@@ -87,6 +87,8 @@ int main() {
 		free(permut);
 		permut = nextPermut;
 		fprintf(out, "%s\n", permut);
+
+		times--;
 	}
 
 	exit;
