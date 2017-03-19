@@ -1,0 +1,12 @@
+[Bb]in/
+[Oo]bj/
+[Bb]uild/
+[Dd]ebug/
+[Rr]elease/
+*.opendb
+.vs/
+*.db
+in
+out
+in.txt
+out.txt
