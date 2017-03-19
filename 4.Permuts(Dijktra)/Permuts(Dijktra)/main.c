@@ -36,7 +36,39 @@ char checkValidation(char* permut) {
 }
 
 char* getNextPermut(char* permut) {
+ 	char* nextPermut = (char*)malloc(sizeof(char) * 15);
+	strcpy(nextPermut, permut);
+	char tail = strlen(nextPermut) - 1;
 
+	char i;
+	char next;
+	while (tail > 0) {
+		if (nextPermut[tail - 1] < nextPermut[tail]) { /* head on start of tail */
+			next = -1;
+			for (i = tail; i < strlen(nextPermut); i++) {
+				if (((next == -1) || (nextPermut[i] < nextPermut[next])) && 
+					(nextPermut[i] > nextPermut[tail - 1])) {
+					next = i;
+				}
+			}
+
+			nextPermut[tail - 1] += nextPermut[next];
+			nextPermut[next] = nextPermut[tail - 1] - nextPermut[next];
+			nextPermut[tail - 1] -= nextPermut[next];
+			
+			/* reversing tail */
+			for (i = 0; i < (strlen(nextPermut) - tail) / 2; i++) {
+				nextPermut[tail + i] += nextPermut[strlen(nextPermut) - i - 1];
+				nextPermut[strlen(nextPermut) - i - 1] = nextPermut[tail + i] - nextPermut[strlen(nextPermut) - i - 1];
+				nextPermut[tail + i] -= nextPermut[strlen(nextPermut) - i - 1];
+			}
+			return nextPermut;
+		}
+
+		tail--;
+	}
+
+	return nextPermut;
 }
 
 int main() {
@@ -52,7 +84,7 @@ int main() {
 	}
 
 	int times;
-	fscanf(in, "%d ", times);
+	fscanf(in, "%d ", &times);
 
 	int i;
 	char* nextPermut;
