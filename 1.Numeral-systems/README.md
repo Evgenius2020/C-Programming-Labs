@@ -4,7 +4,7 @@
 # out.txt:
 * 'wrong input' - if input data is wrong
     or
-* 'nubmer in b2'
+* 'number in b2'
 
 # Examples
 ## in.txt
