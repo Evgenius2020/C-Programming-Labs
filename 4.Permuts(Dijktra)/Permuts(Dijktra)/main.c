@@ -15,7 +15,6 @@ char checkValidation(char* permut) {
 		entries[i] = 0;
 	}
 
-	char max = 0;
 	for (i = 0; i < strlen(permut); i++) {
 		if (!isBetween('0', permut[i], '9')) { /* Wrong character */
 			return 0;
@@ -23,39 +22,31 @@ char checkValidation(char* permut) {
 		if (entries[permut[i] - '0']++ != 0) { /* Number's repeat */
 			return 0;
 		}
-		if (permut[i] - '0' > max) {
-			max = permut[i] - '0';
-		}
-	}
-
-	if (strlen(entries) != max + 1) { /* '104' (missed 2, 3) - like cases */
-		return 0;
 	}
 
 	return 1;
 }
 
 char* getNextPermut(char* permut) {
- 	char* nextPermut = (char*)malloc(sizeof(char) * 15);
+	char* nextPermut = (char*)malloc(sizeof(char) * 10);
 	strcpy(nextPermut, permut);
 	char tail = strlen(nextPermut) - 1;
 
 	char i;
 	char next;
 	while (tail > 0) {
-		if (nextPermut[tail - 1] < nextPermut[tail]) { /* head on start of tail */
+		if (nextPermut[tail - 1] < nextPermut[tail]) {
 			next = -1;
 			for (i = tail; i < strlen(nextPermut); i++) {
-				if (((next == -1) || (nextPermut[i] < nextPermut[next])) && 
+				if (((next == -1) || (nextPermut[i] < nextPermut[next])) &&
 					(nextPermut[i] > nextPermut[tail - 1])) {
 					next = i;
 				}
 			}
-
 			nextPermut[tail - 1] += nextPermut[next];
 			nextPermut[next] = nextPermut[tail - 1] - nextPermut[next];
 			nextPermut[tail - 1] -= nextPermut[next];
-			
+
 			/* reversing tail */
 			for (i = 0; i < (strlen(nextPermut) - tail) / 2; i++) {
 				nextPermut[tail + i] += nextPermut[strlen(nextPermut) - i - 1];
@@ -75,7 +66,7 @@ int main() {
 	FILE* in = fopen("in.txt", "r");
 	FILE* out = fopen("out.txt", "w");
 
-	char* permut = (char*)malloc(sizeof(char), 15);
+	char* permut = (char*)malloc(sizeof(char) * 10);
 	fscanf(in, "%s ", permut);
 
 	if (!checkValidation(permut)) {
@@ -93,6 +84,7 @@ int main() {
 		if (strcmp(permut, nextPermut) == 0) {
 			break;
 		}
+		free(permut);
 		permut = nextPermut;
 		fprintf(out, "%s\n", permut);
 	}
