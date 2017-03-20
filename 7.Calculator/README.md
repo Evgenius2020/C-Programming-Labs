@@ -3,10 +3,8 @@ Calculator (executes string with math expression).
 # in.txt:
 * 'expression' - string of '+', '-', '*', '/', braskets and integer numbers
 # out.txt:
-* 'syntax error'
-of 
-* 'division by zero'
-of
+* 'syntax error' or 
+* 'division by zero' or
 * 'execution result'
 
 # Examples
