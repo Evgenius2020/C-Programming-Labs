@@ -30,20 +30,18 @@ int main() {
 	char curr;
 	int numCollector = -1;
 	int left, right;
-	char brasketFlag = 0;
+	char braskets = 0;
+	char emptyBrasketsFlag = 1;
 	while (!feof(in)) {
 		curr = fgetc(in);
-		if (curr == ')') {
-			if (brasketFlag != 2) {
-				fprintf(out, "syntax error\n");
-				exit;
+
+		if (curr != ')') {
+			if (emptyBrasketsFlag) {
+				emptyBrasketsFlag = 0;
 			}
 		}
-		else {
-			if (brasketFlag == 1) {
-				brasketFlag = 2;
-			}
-		}
+
+#pragma region numbers
 		if ((curr >= '0') && (curr <= '9')) {
 			if (numCollector == -1) {
 				numCollector = curr - '0';
@@ -61,14 +59,29 @@ int main() {
 			stackPush(numbers, numCollector);
 			numCollector = -1;
 		}
+#pragma endregion
+
 		if (curr == '(') {
+			braskets++;
+			emptyBrasketsFlag = 1;
 			stackPush(signs, '(');
-			brasketFlag = 1;
 			continue;
 		}
+
+		if (curr == ')') {
+			if (braskets == 0) {
+				fprintf(out, "syntax error\n");
+				exit;
+			}
+			if (emptyBrasketsFlag) {
+				fprintf(out, "syntax error\n");
+				exit;
+			}
+		}
+
 		while (!stackIsEmpty(signs) && (getPrior(curr) <= getPrior(stackPeek(signs)))) {
 			if (stackPeek(signs) == '(') {
-				brasketFlag = 0;
+				braskets--;
 				stackPop(signs);
 				break;
 			}
@@ -110,6 +123,12 @@ int main() {
 			stackPush(signs, curr);
 		}
 	}
+
+	if (braskets != 0) {
+		fprintf(out, "syntax error\n");
+		exit;
+	}
+
 	if (!stackIsEmpty(signs)) {
 		fprintf(out, "syntax error\n");
 	}
