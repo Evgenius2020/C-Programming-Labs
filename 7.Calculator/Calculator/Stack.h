@@ -10,18 +10,18 @@ typedef struct Stack {
 	StackElement* top;
 } Stack;
 
-// Returns empty stack.
+/* Returns empty stack. */
 Stack* stackCreate();
-// Pop all elements of stack and 'free(stack)'.
+/* Pop all elements of stack and 'free(stack)'. */
 void stackDestroy(Stack* stack);
 
-// Creates new StackElement based in data, inserts it in stack.
+/* Creates new StackElement based in data, inserts it in stack. */
 void stackPush(Stack* stack, int data);
-// Returns top element's data and removing it from stack.
+/* Returns top element's data and removing it from stack. */
 int stackPop(Stack* stack);
-// Returns top element's data.
+/* Returns top element's data. */
 int stackPeek(Stack* stack);
-// Returns 1 if (stack->top == NULL) if true and 0 if else.
+/* Returns 1 if (stack->top == NULL) if true and 0 if else. */
 char stackIsEmpty(Stack* stack);
 
 #endif
