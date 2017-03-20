@@ -33,6 +33,17 @@ int main() {
 	char brasketFlag = 0;
 	while (!feof(in)) {
 		curr = fgetc(in);
+		if (curr == ')') {
+			if (brasketFlag != 2) {
+				fprintf(out, "syntax error\n");
+				exit;
+			}
+		}
+		else {
+			if (brasketFlag == 1) {
+				brasketFlag = 2;
+			}
+		}
 		if ((curr >= '0') && (curr <= '9')) {
 			if (numCollector == -1) {
 				numCollector = curr - '0';
@@ -50,20 +61,13 @@ int main() {
 			stackPush(numbers, numCollector);
 			numCollector = -1;
 		}
-		if (curr == ')') {
-			brasketFlag = 1;
-		}
 		if (curr == '(') {
 			stackPush(signs, '(');
+			brasketFlag = 1;
 			continue;
 		}
-		while ((brasketFlag) ||
-			(!stackIsEmpty(signs) && (getPrior(curr) <= getPrior(stackPeek(signs))))) {
+		while (!stackIsEmpty(signs) && (getPrior(curr) <= getPrior(stackPeek(signs)))) {
 			if (stackPeek(signs) == '(') {
-				if (brasketFlag == 1) { /* 3+2() */
-					fprintf(out, "syntax error\n");
-					exit;
-				}
 				brasketFlag = 0;
 				stackPop(signs);
 				break;
@@ -100,9 +104,6 @@ int main() {
 				break;
 			}
 			}
-			if (brasketFlag) {
-				brasketFlag = 2;
-			}
 			stackPop(signs);
 		}
 		if ((curr != ')') && (curr != EOF) && (curr != '\n')) {
@@ -113,7 +114,12 @@ int main() {
 		fprintf(out, "syntax error\n");
 	}
 	else {
-		fprintf(out, "%d", stackPop(numbers));
+		if (stackIsEmpty(numbers)) {
+			fprintf(out, "syntax error\n");
+		}
+		else {
+			fprintf(out, "%d", stackPop(numbers));
+		}
 	}
 	exit;
 }
