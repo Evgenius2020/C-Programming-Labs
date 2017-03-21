@@ -4,6 +4,8 @@
 Stack* stackCreate() {
 	Stack* stack = (Stack*)malloc(sizeof(Stack));
 	stack->top = NULL;
+
+	return stack;
 }
 
 void stackDestroy(Stack* stack) {
@@ -33,7 +35,7 @@ void stackPush(Stack* stack, int data) {
 
 int stackPop(Stack* stack) {
 	if (stackIsEmpty(stack)) {
-		return NULL;
+		return 0;
 	}
 
 	StackElement* element = stack->top;
@@ -46,7 +48,7 @@ int stackPop(Stack* stack) {
 
 int stackPeek(Stack* stack) {
 	if (stackIsEmpty(stack)) {
-		return NULL;
+		return 0;
 	}
 
 	return stack->top->data;
