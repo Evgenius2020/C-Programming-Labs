@@ -114,7 +114,6 @@ int decode(char* inputFileName, char* outputFileName, int ignoreFlag) {
 	char six[4];  // 101010-11   0011-1001   11-000111
 	int eight[3]; // 101010 11 - 0011 1001 - 11 000111
 	int eofFlag = 0;
-	int i;
 
 	while (1) {
 		for (int i = 0; i < 4; i++) {
@@ -150,7 +149,7 @@ int decode(char* inputFileName, char* outputFileName, int ignoreFlag) {
 		if (six[3] == FAKE_SYMBOL_CODE) {
 			eight[2] = FAKE;
 			if (six[2] == FAKE_SYMBOL_CODE) {
-				eight[1] == FAKE;
+				eight[1] = FAKE;
 				if (six[1] == FAKE_SYMBOL_CODE) {
 					return FAILURE;
 				}

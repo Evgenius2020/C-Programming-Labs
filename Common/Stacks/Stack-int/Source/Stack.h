@@ -1,5 +1,5 @@
-#ifndef STACK
-#define STACK
+#ifndef STACK_INT
+#define STACK_INT
 
 typedef struct StackElement {
 	struct StackElement* next;

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "Stack.h"
+#include "../../Common/Stacks/Stack-int/Source/Stack.c"
 
 #define exit fclose(in); fclose(out); return 0
 

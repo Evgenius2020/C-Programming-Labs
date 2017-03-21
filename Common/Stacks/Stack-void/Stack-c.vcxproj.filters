@@ -15,21 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="Source\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Tree.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Tree_Rotations.c">
+    <ClCompile Include="Source\Stack.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Tree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Tree_Rotations.h">
+    <ClInclude Include="Source\Stack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

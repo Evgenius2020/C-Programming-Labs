@@ -1,5 +1,5 @@
-#ifndef STACK
-#define STACK
+#ifndef STACK_VOID
+#define STACK_VOID
 
 typedef struct StackElement {
 	struct StackElement* next;
@@ -22,6 +22,6 @@ void* stackPop(Stack* stack);
 // Returns top element's data.
 void* stackPeek(Stack* stack);
 // Returns 1 if (stack->top == NULL) if true and 0 if else.
-int stackIsEmpty(Stack* stack);
+char stackIsEmpty(Stack* stack);
 
 #endif

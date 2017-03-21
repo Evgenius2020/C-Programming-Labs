@@ -4,6 +4,8 @@
 Stack* stackCreate() {
 	Stack* stack = (Stack*)malloc(sizeof(Stack));
 	stack->top = NULL;
+
+	return stack;
 }
 
 void stackDestroy(Stack* stack) {
@@ -52,7 +54,7 @@ void* stackPeek(Stack* stack) {
 	return stack->top->data;
 }
 
-int stackIsEmpty(Stack* stack) {
+char stackIsEmpty(Stack* stack) {
 	if (stack->top == NULL) {
 		return 1;
 	}
