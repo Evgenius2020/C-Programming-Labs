@@ -18,6 +18,13 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\main.c" />
+    <ClCompile Include="Source\Queue.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Queue.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{402329F6-0A68-494E-8B35-A27946DFC7EB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -141,13 +148,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.c" />
-    <ClCompile Include="Queue.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Queue.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
