@@ -18,11 +18,25 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\BiteReader.c" />
+    <ClCompile Include="Source\BiteWriter.c" />
+    <ClCompile Include="Source\Decoding.c" />
+    <ClCompile Include="Source\Encoding.c" />
+    <ClCompile Include="Source\main.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\BiteReader.h" />
+    <ClInclude Include="Source\BiteWriter.h" />
+    <ClInclude Include="Source\Decoding.h" />
+    <ClInclude Include="Source\Encoding.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{227DD61C-6DEB-42A9-A508-8B90E28D7350}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Huffmancoding</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>10. Huffman-coding</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -71,12 +85,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -141,23 +157,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="BiteReader.c" />
-    <ClCompile Include="BiteWriter.c" />
-    <ClCompile Include="Decoding.c" />
-    <ClCompile Include="Encoding.c" />
-    <ClCompile Include="main.c" />
-    <ClCompile Include="PriorityQueue.c" />
-    <ClCompile Include="Stack.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BiteReader.h" />
-    <ClInclude Include="BiteWriter.h" />
-    <ClInclude Include="Decoding.h" />
-    <ClInclude Include="Encoding.h" />
-    <ClInclude Include="PriorityQueue.h" />
-    <ClInclude Include="Stack.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

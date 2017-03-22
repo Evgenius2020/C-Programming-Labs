@@ -15,45 +15,33 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PriorityQueue.c">
+    <ClCompile Include="Source\BiteReader.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Stack.c">
+    <ClCompile Include="Source\BiteWriter.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BiteWriter.c">
+    <ClCompile Include="Source\Decoding.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Encoding.c">
+    <ClCompile Include="Source\Encoding.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Decoding.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BiteReader.c">
+    <ClCompile Include="Source\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="PriorityQueue.h">
+    <ClInclude Include="Source\BiteReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Stack.h">
+    <ClInclude Include="Source\BiteWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BiteWriter.h">
+    <ClInclude Include="Source\Decoding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Encoding.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Decoding.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BiteReader.h">
+    <ClInclude Include="Source\Encoding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

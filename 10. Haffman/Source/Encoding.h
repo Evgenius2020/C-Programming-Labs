@@ -13,6 +13,6 @@
  Encoded text
  EOF
 */
-void encode(char* inputFileName, char* outputFileName);
+void encode(FILE* in, FILE* out);
 
 #endif

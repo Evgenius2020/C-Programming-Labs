@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "PriorityQueue.h"
-#include "Stack.h"
+#include "../../Common/PriorityQueue/Source/PriorityQueue.c"
+#include "../../Common/Stacks/Stack-void/Source/Stack.c"
 #include "BiteWriter.h"
 #include "Encoding.h"
 
@@ -20,6 +20,7 @@ Node* createEncodeNode() {
 }
 
 void encode(FILE* in, FILE* out) {
+	int fileStart = ftell(in);
 	unsigned char alphabetSize = 0; /* Number of encoded chars (1-256).*/
 	unsigned char codeLength = 0; /* Number of bites in encoded text.*/
 	BiteWriter* writer = biteWriterCreate(out);
@@ -32,7 +33,7 @@ void encode(FILE* in, FILE* out) {
 	freq[255] = 0;  /*EOF*/
 
 	Node** leaves = (Node**)calloc(256, sizeof(Node*)); /* char-ended leaves for navigation.*/
-	PriorQueue* queue = priorQueueCreate();
+	PriorQueue* queue = priorQueueCreate(256);
 	for (i = 0; i < 256; i++) {
 		if (freq[i]) {
 			alphabetSize++;
@@ -62,29 +63,31 @@ void encode(FILE* in, FILE* out) {
 		exit;
 	}
 #pragma region Coding tree building
-	PriorQueueElement* left;
-	PriorQueueElement* right;
-	Node* buf;
 	Node* newNode;
+	Node* left;
+	Node* right;
+	int newKey;
 
-	while (queue->length) {
+	while (!priorQueueIsEmpty(queue)) {
+		newKey = 0;
+		newKey += priorQueueGetMinKey(queue);
 		left = priorQueueExtractMin(queue);
+		newKey += priorQueueGetMinKey(queue);
 		right = priorQueueExtractMin(queue);
 		if (right) {
 			newNode = createEncodeNode();
-			buf = (Node*)left->value;
-			buf->parent = newNode;
-			buf->sgn = 0;
-			buf = (Node*)right->value;
-			buf->parent = newNode;
-			buf->sgn = 1;
-			priorQueueInsert(queue, newNode, left->key + right->key);
+			left->parent = newNode;
+			left->sgn = 0;
+			right->parent = newNode;
+			right->sgn = 1;
+			priorQueueInsert(queue, newNode, newKey);
 		}
 	}
 	priorQueueDestroy(queue);
 #pragma endregion
 
 #pragma region Coding tree serialization
+	Node* buf;
 	biteWriterEnqueue(writer, 8, alphabetSize); /* Number of encoded chars (byte 1-256)*/
 	int length;
 	Stack* stack = stackCreate();
@@ -112,7 +115,7 @@ void encode(FILE* in, FILE* out) {
 	biteWriterEnqueue(writer, (8 - codeLength) % 8, 0); /* Fakes*/
 
 #pragma region Encoded text
-	rewind(in);
+	fseek(in, fileStart, SEEK_SET);
 	Stack* bites = stackCreate();
 	Node* biteGenerator;
 	unsigned char fileChr;
