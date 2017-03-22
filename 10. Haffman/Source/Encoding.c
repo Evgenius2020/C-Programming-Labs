@@ -1,143 +1,159 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../../Common/PriorityQueue/Source/PriorityQueue.c"
-#include "../../Common/Stacks/Stack-void/Source/Stack.c"
 #include "BiteWriter.h"
 #include "Encoding.h"
 
-#define exit free(freq); free(leaves); biteWriterDestroy(writer); return
+#define exit return;
 
 typedef struct Node {
 	struct Node* parent;
 	char sgn; /* 0 - if left leaf, 1 - if right leaf*/
+	short freq;
 }Node;
 
-Node* createEncodeNode() {
+Node* createEncodeNode(short freq) {
 	Node* node = (Node*)malloc(sizeof(Node));
 	node->parent = NULL;
+	node->freq = freq;
 
 	return node;
 }
 
-void encode(FILE* in, FILE* out) {
-	int fileStart = ftell(in);
-	unsigned char alphabetSize = 0; /* Number of encoded chars (1-256).*/
-	unsigned char codeLength = 0; /* Number of bites in encoded text.*/
-	BiteWriter* writer = biteWriterCreate(out);
-	int i, j;
-
-	int* freq = calloc(256, sizeof(int));
-	while (!feof(in)) {
-		freq[(unsigned char)fgetc(in)]++;
+/* Running a file, inserts their code to outputfile */
+void encodeText(FILE* in, BiteWriter* writer, char** codes) {
+	short chr, i;
+	while ((chr = fgetc(in)) != EOF) {
+		for (i = 0; i < strlen(codes[chr]); i++) {
+			biteWriterEnqueue(writer, 1, codes[chr][i]); // TODO: whole code must be inserted into queue
+		}
 	}
-	freq[255] = 0;  /*EOF*/
+}
 
-	Node** leaves = (Node**)calloc(256, sizeof(Node*)); /* char-ended leaves for navigation.*/
+/* Generates codes for each char to encode */
+char** generateCodes(int* freq) {
 	PriorQueue* queue = priorQueueCreate(256);
+	Node** leaves = (Node**)calloc(256, sizeof(Node*)); /* char-ended leaves for navigation.*/
+	char** codes = (char**)calloc(sizeof(char*), 256);
+	short i;
 	for (i = 0; i < 256; i++) {
 		if (freq[i]) {
-			alphabetSize++;
-			leaves[i] = createEncodeNode();
+			leaves[i] = createEncodeNode(freq[i]);
+			codes[i] = (char*)malloc(sizeof(char) * 256);
 			priorQueueInsert(queue, leaves[i], freq[i]);
 		}
 	}
-	if (alphabetSize == 0) {
-		exit;
-	}
-	if (alphabetSize == 1) {
-		biteWriterEnqueue(writer, 8, 1); /* AlphabetSize*/
-		for (i = 0; i < 256; i++) {
-			if (freq[i] != 0) {
-				break;
-			}
-		}
-		biteWriterEnqueue(writer, 8, i); /* Char*/
-		biteWriterEnqueue(writer, 8, 1); /* Code length*/
-		biteWriterEnqueue(writer, 1, 1); /* Code*/
-		codeLength = (8 + 8 + 8 + 1 + 3 + freq[i]) % 8;
-		biteWriterEnqueue(writer, 3, (8 - codeLength) % 8); /* Number of fakes*/
-		biteWriterEnqueue(writer, (8 - codeLength) % 8, 0); /* Fakes*/
-		for (j = 0; j < freq[i]; j++) {
-			biteWriterEnqueue(writer, 1, 1);
-		}
-		exit;
-	}
-#pragma region Coding tree building
-	Node* newNode;
-	Node* left;
-	Node* right;
-	int newKey;
 
+	Node *newNode, *left, *right;
+	/* Coding tree building */
 	while (!priorQueueIsEmpty(queue)) {
-		newKey = 0;
-		newKey += priorQueueGetMinKey(queue);
 		left = priorQueueExtractMin(queue);
-		newKey += priorQueueGetMinKey(queue);
 		right = priorQueueExtractMin(queue);
 		if (right) {
-			newNode = createEncodeNode();
+			newNode = createEncodeNode(left->freq + right->freq);
 			left->parent = newNode;
 			left->sgn = 0;
 			right->parent = newNode;
 			right->sgn = 1;
-			priorQueueInsert(queue, newNode, newKey);
+			priorQueueInsert(queue, newNode, newNode->freq);
+		}
+	}
+
+	Node* buf;
+	int strIndex;
+	for (i = 0; i < 256; i++) {
+		if (freq[i]) {
+			strIndex = 0;
+			buf = leaves[i];
+			while (buf->parent) {
+				codes[i][strIndex++] = buf->sgn + '0';
+				buf = buf->parent;
+			}
+			codes[i][strIndex] = '\0';
+			codes[i] = strrev(codes[i]);
+		}
+	}
+
+	Node* parent;
+	for (i = 0; i < 256; i++) {
+		buf = leaves[i];
+		if (buf) {
+			parent = buf->parent;
+			free(buf);
+			buf = parent;
 		}
 	}
 	priorQueueDestroy(queue);
-#pragma endregion
+	free(leaves);
+	return codes;
+}
 
-#pragma region Coding tree serialization
-	Node* buf;
-	biteWriterEnqueue(writer, 8, alphabetSize); /* Number of encoded chars (byte 1-256)*/
-	int length;
-	Stack* stack = stackCreate();
+char serializeCodes(char** codes, BiteWriter* writer) {
+	short i, j;
 	for (i = 0; i < 256; i++) {
-		if (freq[i] != 0) {
-			length = 0;
-			buf = leaves[i];
-			while (buf->parent) {
-				stackPush(stack, buf);
-				buf = buf->parent;
-				length++;
-			}
-			codeLength = (codeLength + (length * freq[i]) % 8) % 8;
-			biteWriterEnqueue(writer, 8, i); /* Char*/
-			biteWriterEnqueue(writer, 8, length); /* Code length*/
-			while (!stackIsEmpty(stack)) {
-				buf = (Node*)stackPop(stack);
-				biteWriterEnqueue(writer, 1, buf->sgn); /* Code*/
+		if (codes[i]) {
+			biteWriterEnqueue(writer, 8, i);
+			biteWriterEnqueue(writer, 8, strlen(codes[i]));
+			for (j = 0; j < strlen(codes[i]); j++) {
+				biteWriterEnqueue(writer, 1, codes[i][j]); // TODO: NO WAY MAN!
 			}
 		}
 	}
-#pragma endregion
-	codeLength = (codeLength + 3 + writer->bitesN) % 8;
+}
+
+void oneCharAlphabetCase(FILE* in, FILE* out, char chr, int freq) {
+	BiteWriter* writer = biteWriterCreate(out);
+	biteWriterEnqueue(writer, 8, 1); /* AlphabetSize*/
+	biteWriterEnqueue(writer, 8, chr); /* Char*/
+	biteWriterEnqueue(writer, 8, 1); /* Code length*/
+	biteWriterEnqueue(writer, 1, 1); /* Code*/
+	char codeLength = (8 + 8 + 8 + 1 + 3 + freq) % 8;
 	biteWriterEnqueue(writer, 3, (8 - codeLength) % 8); /* Number of fakes*/
 	biteWriterEnqueue(writer, (8 - codeLength) % 8, 0); /* Fakes*/
+	while(freq--) {
+		biteWriterEnqueue(writer, 1, 1); // TODO: TO SLOW!
+	}
+}
 
-#pragma region Encoded text
-	fseek(in, fileStart, SEEK_SET);
-	Stack* bites = stackCreate();
-	Node* biteGenerator;
-	unsigned char fileChr;
-	unsigned char generatedChr;
-	char bitesN = 0; /* Counter of bites in stack;*/
-	short digit; /* For generating char;*/
-	while (1) {
-		fileChr = fgetc(in);
-		if (255 == fileChr) { /*EOF*/
-			break;
-		}
-		buf = leaves[fileChr];
-		while (buf->parent) {
-			stackPush(stack, buf);
-			buf = buf->parent;
-		}
-		while (!stackIsEmpty(stack)) {
-			buf = (Node*)stackPop(stack);
-			biteWriterEnqueue(writer, 1, buf->sgn);
+void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq, char alphabetSize) {
+	BiteWriter* writer = biteWriterCreate(out);
+	biteWriterEnqueue(writer, 8, alphabetSize); /* Alphabet size */
+	char** codes = generateCodes(freq);
+	short freeBites = serializeCodes(codes, writer); /* Serialized codes */
+	short i;
+	for (i = 0; i < 256; i++) {
+		if (freq[i]) {
+			freeBites += strlen(codes[i]) * freq[i];
+			freeBites %= 8;
 		}
 	}
-#pragma endregion
+	freeBites = (freeBites + 3) % 8;
+	biteWriterEnqueue(writer, 3, (8 - freeBites) % 8); /* Number of fakes*/
+	biteWriterEnqueue(writer, (8 - freeBites) % 8, 0); /* Fakes*/
+	encodeText(in, writer, codes); /* Encoded text */
+}
 
+void encode(FILE* in, FILE* out) {
+	int fileStart = ftell(in);
+	unsigned char alphabetSize = 0; /* Number of unique chars in the text */
+	short chr; /* EOF-handling */
+	int* freq = calloc(256, sizeof(int));
+	while ((chr = fgetc(in)) != EOF) {
+		if (!freq[chr]) {
+			alphabetSize++;
+		}
+		freq[chr]++;
+	}
+	fseek(in, fileStart, SEEK_SET);
+
+	short i;
+	if (alphabetSize == 1) {
+		for (i = 0; i < 256, !freq[i]; i++);
+		oneCharAlphabetCase(in, out, i, freq[i]);
+	}
+	if (alphabetSize > 1) {
+		manyCharsAlphabetCase(in, out , freq, alphabetSize);
+	}
 	exit;
 }
