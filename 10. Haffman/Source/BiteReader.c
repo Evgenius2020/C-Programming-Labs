@@ -15,12 +15,7 @@ BiteReader* biteReaderCreate(FILE* file) {
 void biteReaderDestroy(BiteReader* reader) {
 	free(reader);
 }
-unsigned short createMask(unsigned char length) {
-	if (length > 1) {
-		return (createMask(length - 1) << 1) | 1;
-	}
-	return length;
-}
+static unsigned short masks[8] = {1, 3, 7, 15, 31, 63, 127, 255};
 
 unsigned short biteReaderDequeue(BiteReader* reader, unsigned char bitesN) {
 	if (reader->eofFlag) {
@@ -43,7 +38,7 @@ unsigned short biteReaderDequeue(BiteReader* reader, unsigned char bitesN) {
 
 	result = reader->bites >> (reader->bitesN - bitesN); /*1100110 0|1101100 , 11 001001|01*/
 	reader->bitesN -= bitesN;
-	reader->bites = reader->bites & createMask(reader->bitesN); /*Keep last 'bitesN' bites;*/
+	reader->bites = reader->bites & masks[reader->bitesN - 1]; /*Keep last 'bitesN' bites;*/
 
 	return result;
 }
