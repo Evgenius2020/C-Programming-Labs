@@ -5,8 +5,6 @@
 #include "BiteWriter.h"
 #include "Encoding.h"
 
-#define exit return;
-
 typedef struct Node {
 	struct Node* parent;
 	char sgn; /* 0 - if left leaf, 1 - if right leaf*/
@@ -100,6 +98,8 @@ char serializeCodes(char** codes, BiteWriter* writer) {
 			}
 		}
 	}
+
+	return writer->bitesN;
 }
 
 void oneCharAlphabetCase(FILE* in, FILE* out, char chr, int freq) {
@@ -137,8 +137,9 @@ void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq, char alphabetSize) {
 void encode(FILE* in, FILE* out) {
 	int fileStart = ftell(in);
 	unsigned char alphabetSize = 0; /* Number of unique chars in the text */
-	short chr; /* EOF-handling */
 	int* freq = calloc(256, sizeof(int));
+
+	short chr; /* EOF-handling */
 	while ((chr = fgetc(in)) != EOF) {
 		if (!freq[chr]) {
 			alphabetSize++;
@@ -155,5 +156,4 @@ void encode(FILE* in, FILE* out) {
 	if (alphabetSize > 1) {
 		manyCharsAlphabetCase(in, out , freq, alphabetSize);
 	}
-	exit;
 }
