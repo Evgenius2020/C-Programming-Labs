@@ -33,10 +33,14 @@ unsigned short biteReaderDequeue(BiteReader* reader, unsigned char bitesN) {
 		if (chr == EOF) {
 			reader->eofFlag = 1;
 			chr = 0;
+			return reader->bites;
 		}
-		reader->bitesN += 8;
-		reader->bites = (reader->bites << 8) | chr;
+		else {
+			reader->bitesN += 8;
+			reader->bites = (reader->bites << 8) | chr;
+		}
 	}
+
 	result = reader->bites >> (reader->bitesN - bitesN); /*1100110 0|1101100 , 11 001001|01*/
 	reader->bitesN -= bitesN;
 	reader->bites = reader->bites & createMask(reader->bitesN); /*Keep last 'bitesN' bites;*/

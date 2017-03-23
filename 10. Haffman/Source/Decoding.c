@@ -20,21 +20,16 @@ DecodeNode* createDecodeNode() {
 	return node;
 }
 
-void decode(FILE* in, FILE* out) {
-	BiteReader* reader = biteReaderCreate(in);
-	unsigned char encodedChars = biteReaderDequeue(reader, 8);
-	int i, j;
-	char bite;
+/* Reading code of tree from the file, generates coding tree */
+DecodeNode* generateTree(BiteReader* reader, unsigned char encodedChars) {
 	DecodeNode* root = createDecodeNode();
 	DecodeNode* buf;
-
-#pragma region Tree generation
-	char chr, codeLength;
-	for (i = 0; i < encodedChars; i++) {
+	unsigned char chr, codeLength, bite;
+	while(encodedChars--) {
 		buf = root;
 		chr = biteReaderDequeue(reader, 8);
 		codeLength = biteReaderDequeue(reader, 8);
-		for (j = 0; j < codeLength; j++) {
+		while (codeLength--) {
 			bite = biteReaderDequeue(reader, 1);
 			if (bite) {
 				if (!buf->right) {
@@ -51,27 +46,37 @@ void decode(FILE* in, FILE* out) {
 		}
 		buf->chr = chr;
 	}
-#pragma endregion
 
-	biteReaderDequeue(reader, biteReaderDequeue(reader, 3)); /* Skips fakes.*/
-	bite = biteReaderDequeue(reader, 1);
-	if (reader->eofFlag) {
-		exit();
-	}
-	buf = root;
-	while (1) {	
+	return root;
+}
+
+void regainText(BiteReader* reader, DecodeNode* root, FILE* out) {
+	DecodeNode* buf = root;
+	char bite;
+
+	while (1) {
+		bite = biteReaderDequeue(reader, 1);
+		if (reader->eofFlag) {
+			break;
+		}
 		if (bite) {
 			buf = buf->right;
-		} else {
+		}
+		else {
 			buf = buf->left;
 		}
-		if (!(buf->left) && !(buf->right)) {
+		if (!(buf->left) && !(buf->right)) { /* Readed full code word */
 			fputc(buf->chr, out);
 			buf = root;
 		}
-		bite = biteReaderDequeue(reader, 1);
-		if (reader->eofFlag) {
-			exit();
-		}
 	}
+}
+
+void decode(FILE* in, FILE* out) {
+	BiteReader* reader = biteReaderCreate(in);
+
+	unsigned char encodedChars = biteReaderDequeue(reader, 8); /* Alphabet size */
+	DecodeNode* root = generateTree(reader, encodedChars); /* Coding tree */
+	biteReaderDequeue(reader, biteReaderDequeue(reader, 3)); /* Skips fakes.*/
+	regainText(reader, root, out); /* Encoded text */
 }
