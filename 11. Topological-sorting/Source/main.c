@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../Common/Stacks/Stack-void/Source/Stack.c"
+#include "../../Common/Stacks/Stack-int/Source/Stack.c"
 
 #define maxVertices 1000
 #define maxEdges(n) n*(n-1)/2
@@ -49,7 +49,7 @@ void destroyVerticies(Vertex* verticies, int vertriciesN) {
 	free(verticies);
 }
 
-const char getErrorString(char statusCode) {
+const char* getErrorString(char statusCode) {
 	if (statusCode == INIT_BAD_EDGES_NUMBER) {
 		return "bad number of edges\n";
 	}
@@ -60,7 +60,7 @@ const char getErrorString(char statusCode) {
 		return "bad vertex\n";
 	}
 	if (statusCode == INIT_BAD_VERTEX_NUMBER) {
-		return "bad number of verticies\n";
+		return "bad number of vertices\n";
 	}
 }
 
@@ -71,7 +71,8 @@ InitializationResult initializeVerticies(FILE* in) {
 	result.verticies = NULL;
 	result.verticiesN = 0;
 
-	int verticiesN, edgesN, i, from;
+	int verticiesN, edgesN;
+	short i, from;
 	Vertex* verticies;
 	Edge* buf;
 
@@ -177,11 +178,11 @@ void main() {
 				fprintf(out, "%d ", stackPop(sortedVerticies));
 			}
 			stackDestroy(sortedVerticies);
-			destroyVerticies(result.verticies, result.verticiesN);
 		}
 		else {
-			fprintf(out, "inpossible to sort\n");
+			fprintf(out, "impossible to sort\n");
 		}
+		destroyVerticies(result.verticies, result.verticiesN);
 	}
 	else {
 		fprintf(out, getErrorString(result.statusCode));
