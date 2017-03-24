@@ -7,16 +7,17 @@
 #define isNumber(val) (('0' <= val) && (val <= '9'))
 #define isSign(val) ((val == '(') || (val == ')') || (val =='+') || (val == '-') || (val == '*') || (val == '/'))
 
-#define VALIDATION_RIGHT 1
-#define VALIDATION_SYNTAX_ERROR 2
-#define VALIDATION_DIVISION_BY_ZERO 3
+typedef struct ExecutionResult {
+	char statusCode;
+	int result;
+}ExecutionResult;
 
 char checkValidation(char* expression) {
 	short i;
 	char curr;
 	short brackets = 0; /* (1 + 3)) */
 	char emptyBracketsFlag = 0; /* 1 + 3() */
-	char divisionFlag = 0;
+	char leftOperandFlag = 0;
 	for (i = 0; i < strlen(expression); i++) {
 		curr = expression[i];
 		if (isSign(curr)) {
@@ -30,31 +31,32 @@ char checkValidation(char* expression) {
 					brackets--;
 					continue;
 				}
-				return VALIDATION_SYNTAX_ERROR;
+				return 0;
 			}
-			if (curr == '/') {
-				divisionFlag = 1;
+			if (!leftOperandFlag) {
+				return 0;
 			}
+			leftOperandFlag = 0;
 			continue;
 		}
 
 		if (isNumber(curr)) {
-			if ((divisionFlag) && (curr == '0')) {
-				return VALIDATION_DIVISION_BY_ZERO;
-			}
+			leftOperandFlag = 1;
 			emptyBracketsFlag = 0;
-			divisionFlag = 0;
 			continue;
 		}
 
-		return VALIDATION_SYNTAX_ERROR; /* Wrong symbol */
+		return 0; /* Wrong symbol */
 	}
 
 	if (brackets) {
-		return VALIDATION_SYNTAX_ERROR;
+		return 0;
+	}
+	if (!leftOperandFlag) {
+		return 0;
 	}
 
-	return VALIDATION_RIGHT;
+	return 1;
 }
 
 char getPrior(char chr) {
@@ -64,11 +66,11 @@ char getPrior(char chr) {
 	if ((chr == '*') || (chr == '/')) {
 		return 3;
 	}
-	if ((chr == '(') || (chr == ')')) {
+	if (chr == '(') {
 		return 1;
 	}
-	if ((-1 == chr) || (chr == '\n')) {
-		return 0;
+	if ((chr == ')')) {
+		return 1;
 	}
 
 	return -1;
@@ -94,7 +96,16 @@ int calculate(int left, char sign, int right) {
 	return 0;
 }
 
-int execute(char* expression) {
+char* normalizeString(char* str) {
+	if (str[strlen(str) - 1] == '\n') {
+		str[strlen(str) - 1] = '\0';
+	}
+
+	return str;
+}
+
+ExecutionResult execute(char* expression) {
+	ExecutionResult result;
 	Stack* signs = stackCreate();
 	Stack* numbers = stackCreate();
 
@@ -107,7 +118,7 @@ int execute(char* expression) {
 		curr = expression[i];
 		if (isNumber(curr)) {
 			if (!numberCollectingFlag) {
-				numberCollectingFlag = 1;
+				numberCollectingFlag = 1; 
 			}
 			numberCollector *= 10;
 			numberCollector += curr - '0';
@@ -119,13 +130,21 @@ int execute(char* expression) {
 				numberCollector = 0;
 				numberCollectingFlag = 0;
 			}
-			while ((!stackIsEmpty(signs)) && (getPrior(stackPeek(signs)) >= getPrior(curr))) {
+			if (curr == '(') {
+				stackPush(signs, '(');
+				continue;
+			}
+			while ((!stackIsEmpty(signs)) && (getPrior(curr) <= getPrior(stackPeek(signs)))) {
 				if (stackPeek(signs) == '(') {
 					stackPop(signs);
 					break;
 				}
 				right = stackPop(numbers);
 				left = stackPop(numbers);
+				if ((right == 0) && (stackPeek(signs) == '/')) {
+					result.statusCode = 0;
+					return result;
+				}
 				stackPush(numbers, calculate(left, stackPeek(signs), right));
 				stackPop(signs);
 			}
@@ -141,11 +160,16 @@ int execute(char* expression) {
 	while (!stackIsEmpty(signs)) {
 		right = stackPop(numbers);
 		left = stackPop(numbers);
+		if ((right == 0) && (stackPeek(signs) == '/')) {
+			result.statusCode = 0;
+			return result;
+		}
 		stackPush(numbers, calculate(left, stackPeek(signs), right));
 		stackPop(signs);
 	}
-	
-	int result = stackPeek(numbers);
+
+	result.result = stackPop(numbers);
+	result.statusCode = 1;
 	stackDestroy(signs);
 	stackDestroy(numbers);
 	return result;
@@ -160,22 +184,21 @@ void main() {
 	}
 
 	char* expression = (char*)malloc(MAX_STRLEN * sizeof(char));
-	fscanf(in, "%s ", expression);
-	switch (checkValidation(expression)) {
-	case VALIDATION_RIGHT: {
-		fprintf(out, "%d\n", execute(expression));
-		break;
+	fgets(expression, MAX_STRLEN, in);
+	expression = normalizeString(expression);
+	ExecutionResult result;
+	if (checkValidation(expression)) {
+		result = execute(expression);
+		if (result.statusCode) {
+			fprintf(out, "%d\n", result.result);
+		}
+		else {
+			fprintf(out, "division by zero\n");
+		}
 	}
-	case VALIDATION_SYNTAX_ERROR: {
+	else {
 		fprintf(out, "syntax error\n");
-		break;
 	}
-	case VALIDATION_DIVISION_BY_ZERO: {
-		fprintf(out, "division by zero\n");
-		break;
-	}
-	}
-
 	free(expression);
 	fclose(in);
 	fclose(out);
