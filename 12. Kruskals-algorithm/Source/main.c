@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "Initialize.h"
 #include "DataTypes.h"
 
 Vertex* makeSet() {
@@ -30,31 +31,56 @@ int compareEdges(Edge* left, Edge* right) {
 void main() {
 	FILE* in = fopen("in.txt", "r");
 	FILE* out = fopen("out.txt", "w");
+	short i, spannedVerticies;
 
 	if ((!in) || (!out)) {
 		return;
 	}
 
-	InitializationResult result = initalize();
-	qsort(result.edges, result.edgesN, sizeof(Edge), compareEdges)
-
-	/* Making a spanning tree.*/
-	while (queue->length) {
-		buf = (Edge*)priorQueueExtractMin(queue);
-		if (findSet(&vertices[buf->from - 1]) != (findSet(&vertices[buf->to - 1]))) {
-			unionSets(findSet(&vertices[buf->from - 1]), findSet(&vertices[buf->to - 1]));
-			fprintf(out, "%d %d\n", buf->from, buf->to);
+	InitializationResult result = initialize(in);
+	if (result.statusCode == INIT_SUCCESS) {
+		qsort(result.edges, result.edgesN, sizeof(Edge), compareEdges);
+		spannedVerticies = makeSpanningTree(result);
+		if (spannedVerticies == result.verticiesN) {
+			for (i = 0; i < result.verticiesN; i++) {
+				fprintf(out, "%d %d\n", result.edges[i].from, result.edges[i].to);
+			}
 		}
-		free(buf);
-	}
-
-	/*Checking that all vertices are in the tree.*/
-	for (i = 0; i < verticesN - 1; i++) {
-		if (findSet(&vertices[i]) != findSet(&vertices[i + 1])) {
-			fclose(out);
-			out = fopen("out.txt", "w");
+		else {
 			fprintf(out, "no spanning tree\n");
-			break;
+		}
+
+		free(result.edges);
+		free(result.verticies);
+	}
+	else {
+		/* erorrs */
+		if (result.statusCode == INIT_BAD_EDGES_NUMBER) {
+			fprintf(out, "bad number of edges\n");
+		}
+		if (result.statusCode == INIT_BAD_LENGTH) {
+			fprintf(out, "bad length\n");
+		}
+		if (result.statusCode == INIT_BAD_LINES_NUMBER) { 
+			fprintf(out, "bad number of lines\n");
+		}
+		if (result.statusCode == INIT_BAD_VERTEX) {
+			fprintf(out, "bad vertex\n");
+		}
+		if (result.statusCode == INIT_BAD_VERTICIES_NUMBER) {
+			fprintf(out, "bad number of vertex\n");
 		}
 	}
+
+	fclose(in);
+	fclose(out);
+
+	///* Making a spanning tree.*/
+	//while (queue->length) {
+	//	buf = (Edge*)priorQueueExtractMin(queue);
+	//	if (findSet(&vertices[buf->from - 1]) != (findSet(&vertices[buf->to - 1]))) {
+	//		unionSets(findSet(&vertices[buf->from - 1]), findSet(&vertices[buf->to - 1]));
+	//	}
+	//	free(buf);
+	//}
 }
