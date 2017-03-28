@@ -7,8 +7,9 @@ int main() {
 	FILE* in = fopen("in.txt", "r");
 	FILE* out = fopen("out.txt", "w");
 	
-	char cmd;
-	fscanf(in, "%c\n\t", &cmd);
+	char buf[5];
+	fgets(&buf, 5, in);
+	char cmd = buf[0];
 	if (cmd == 'd') {
 		decode(in, out);
 	}
