@@ -18,11 +18,20 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Initialize.c" />
+    <ClCompile Include="Source\main.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\DataTypes.h" />
+    <ClInclude Include="Source\Initialize.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F007D3D2-A22E-4394-B724-1E9C8A421150}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Kruskalsalgorithm</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>12. Kruskals-algorithm</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -142,13 +151,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.c" />
-    <ClCompile Include="PriorityQueue.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="PriorityQueue.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
