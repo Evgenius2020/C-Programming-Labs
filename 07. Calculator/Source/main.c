@@ -1,7 +1,63 @@
 #include <stdio.h>
-#include "../../Common/Stacks/Stack-int/Source/Stack.c"
+#include <stdlib.h>
+#include <string.h>
+#include "Stack.h"
 
-#define exit fclose(in); fclose(out); return 0
+#define MAX_STRLEN 1024
+#define isNumber(val) (('0' <= val) && (val <= '9'))
+#define isSign(val) ((val == '(') || (val == ')') || (val =='+') || (val == '-') || (val == '*') || (val == '/'))
+
+typedef struct ExecutionResult {
+	char statusCode;
+	int result;
+}ExecutionResult;
+
+char checkValidation(char* expression) {
+	short i;
+	char curr;
+	short brackets = 0; /* (1 + 3)) */
+	char emptyBracketsFlag = 0; /* 1 + 3() */
+	char leftOperandFlag = 0;
+	for (i = 0; i < strlen(expression); i++) {
+		curr = expression[i];
+		if (isSign(curr)) {
+			if (curr == '(') {
+				brackets++;
+				emptyBracketsFlag = 1;
+				continue;
+			}
+			if (curr == ')') {
+				if ((brackets) && (!emptyBracketsFlag)) {
+					brackets--;
+					continue;
+				}
+				return 0;
+			}
+			if (!leftOperandFlag) {
+				return 0;
+			}
+			leftOperandFlag = 0;
+			continue;
+		}
+
+		if (isNumber(curr)) {
+			leftOperandFlag = 1;
+			emptyBracketsFlag = 0;
+			continue;
+		}
+
+		return 0; /* Wrong symbol */
+	}
+
+	if (brackets) {
+		return 0;
+	}
+	if (!leftOperandFlag) {
+		return 0;
+	}
+
+	return 1;
+}
 
 char getPrior(char chr) {
 	if ((chr == '+') || (chr == '-')) {
@@ -10,135 +66,141 @@ char getPrior(char chr) {
 	if ((chr == '*') || (chr == '/')) {
 		return 3;
 	}
-	if ((chr == '(') || (chr == ')')) {
+	if (chr == '(') {
 		return 1;
 	}
-	if ((-1 == chr) || (chr == '\n')) {
-		return 0;
+	if ((chr == ')')) {
+		return 1;
 	}
 
 	return -1;
 }
 
-int main() {
+int calculate(int left, char sign, int right) {
+	switch (sign) {
+	case '+': {
+		return left + right;
+	}
+	case '-': {
+		return left - right;
+	}
+	case '*': {
+		return left * right;
+	}
+	case '/': {
+		if (right != 0) {
+			return left / right;
+		}
+	}
+	}
+	return 0;
+}
+
+char* normalizeString(char* str) {
+	if (str[strlen(str) - 1] == '\n') {
+		str[strlen(str) - 1] = '\0';
+	}
+
+	return str;
+}
+
+ExecutionResult execute(char* expression) {
+	ExecutionResult result;
+	Stack* signs = stackCreate();
+	Stack* numbers = stackCreate();
+
+	int numberCollector = 0;
+	char numberCollectingFlag = 0;
+	short i;
+	char curr;
+	int left, right;
+	for (i = 0; i < strlen(expression); i++) {
+		curr = expression[i];
+		if (isNumber(curr)) {
+			if (!numberCollectingFlag) {
+				numberCollectingFlag = 1; 
+			}
+			numberCollector *= 10;
+			numberCollector += curr - '0';
+			continue;
+		}
+		if (isSign(curr)) {
+			if (numberCollectingFlag) {
+				stackPush(numbers, numberCollector);
+				numberCollector = 0;
+				numberCollectingFlag = 0;
+			}
+			if (curr == '(') {
+				stackPush(signs, '(');
+				continue;
+			}
+			while ((!stackIsEmpty(signs)) && (getPrior(curr) <= getPrior(stackPeek(signs)))) {
+				if (stackPeek(signs) == '(') {
+					stackPop(signs);
+					break;
+				}
+				right = stackPop(numbers);
+				left = stackPop(numbers);
+				if ((right == 0) && (stackPeek(signs) == '/')) {
+					result.statusCode = 0;
+					return result;
+				}
+				stackPush(numbers, calculate(left, stackPeek(signs), right));
+				stackPop(signs);
+			}
+			if (curr != ')') {
+				stackPush(signs, curr);
+			}
+		}
+	}
+
+	if (numberCollectingFlag) {
+		stackPush(numbers, numberCollector);
+	}
+	while (!stackIsEmpty(signs)) {
+		right = stackPop(numbers);
+		left = stackPop(numbers);
+		if ((right == 0) && (stackPeek(signs) == '/')) {
+			result.statusCode = 0;
+			return result;
+		}
+		stackPush(numbers, calculate(left, stackPeek(signs), right));
+		stackPop(signs);
+	}
+
+	result.result = stackPop(numbers);
+	result.statusCode = 1;
+	stackDestroy(signs);
+	stackDestroy(numbers);
+	return result;
+}
+
+void main() {
 	FILE* in = fopen("in.txt", "r");
 	FILE* out = fopen("out.txt", "w");
 
-	Stack* numbers = stackCreate();
-	Stack* signs = stackCreate();
-
-	char curr;
-	int numCollector = -1;
-	int left, right;
-	char braskets = 0;
-	char emptyBrasketsFlag = 1;
-	while (!feof(in)) {
-		curr = fgetc(in);
-
-		if (curr != ')') {
-			if (emptyBrasketsFlag) {
-				emptyBrasketsFlag = 0;
-			}
-		}
-
-#pragma region numbers
-		if ((curr >= '0') && (curr <= '9')) {
-			if (numCollector == -1) {
-				numCollector = curr - '0';
-			}
-			else {
-				numCollector = numCollector * 10 + curr - '0';
-			}
-			continue;
-		}
-		if (getPrior(curr) == -1) {
-			fprintf(out, "syntax error\n");
-			exit;
-		}
-		if (numCollector != -1) {
-			stackPush(numbers, numCollector);
-			numCollector = -1;
-		}
-#pragma endregion
-
-		if (curr == '(') {
-			braskets++;
-			emptyBrasketsFlag = 1;
-			stackPush(signs, '(');
-			continue;
-		}
-
-		if (curr == ')') {
-			if (braskets == 0) {
-				fprintf(out, "syntax error\n");
-				exit;
-			}
-			if (emptyBrasketsFlag) {
-				fprintf(out, "syntax error\n");
-				exit;
-			}
-		}
-
-		while (!stackIsEmpty(signs) && (getPrior(curr) <= getPrior(stackPeek(signs)))) {
-			if (stackPeek(signs) == '(') {
-				braskets--;
-				stackPop(signs);
-				break;
-			}
-			if (stackIsEmpty(numbers)) {
-				fprintf(out, "syntax error\n");
-				exit;
-			}
-			right = stackPop(numbers);
-			if (stackIsEmpty(numbers)) {
-				fprintf(out, "syntax error\n");
-				exit;
-			}
-			left = stackPop(numbers);
-			switch (stackPeek(signs)) {
-			case '-': {
-				stackPush(numbers, left - right);
-				break;
-			}
-			case '+': {
-				stackPush(numbers, left + right);
-				break;
-			}
-			case '*': {
-				stackPush(numbers, left * right);
-				break;
-			}
-			case '/': {
-				if (right == 0) {
-					fprintf(out, "division by zero\n");
-					exit;
-				}
-				stackPush(numbers, left / right);
-				break;
-			}
-			}
-			stackPop(signs);
-		}
-		if ((curr != ')') && (curr != EOF) && (curr != '\n')) {
-			stackPush(signs, curr);
-		}
+	if ((!in) || (!out)) {
+		return;
 	}
 
-	if (braskets != 0) {
-		fprintf(out, "syntax error\n");
-		exit;
-	}
-
-	if (!stackIsEmpty(signs)) {
-		fprintf(out, "syntax error\n");
-	}
-	else {
-		if (stackIsEmpty(numbers)) {
-			fprintf(out, "syntax error\n");
+	char* expression = (char*)malloc(MAX_STRLEN * sizeof(char));
+	fgets(expression, MAX_STRLEN, in);
+	expression = normalizeString(expression);
+	ExecutionResult result;
+	if (checkValidation(expression)) {
+		result = execute(expression);
+		if (result.statusCode) {
+			fprintf(out, "%d\n", result.result);
 		}
 		else {
-			fprintf(out, "%d", stackPop(numbers));
+			fprintf(out, "division by zero\n");
 		}
 	}
-	exit;
+	else {
+		fprintf(out, "syntax error\n");
+	}
+	free(expression);
+	fclose(in);
+	fclose(out);
+	return;
 }

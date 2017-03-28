@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define exit fclose(in); fclose(out); return 0
 #define isBetween(left, valuable, right) ((left <= valuable) && (valuable <= right))
 #define MIN_SN 2
 #define MAX_SN 16
-#define MAX_STRLEN 16
+#define MAX_STRLEN 60
 
 int getCode(char chr) {
 	return (chr >= 'a') ? (chr - 'a' + 10) : (chr - '0');
@@ -48,7 +49,7 @@ char* decToStr(double dec, char ns) {
 	do {
 		result[i++] = getChar(intPart % ns);
 		intPart /= ns;
-	} while (intPart);
+	} while ((intPart) && (i < MAX_STRLEN - 1));
 	char j;
 	for (j = 0; j < i / 2; j++) {
 		result[j] += result[i - j - 1];
@@ -71,51 +72,66 @@ char* decToStr(double dec, char ns) {
 	return result;
 }
 
+char checkValidation(char* str, char base) {
+	char strIndex;
+	char digitsAtFloat = 0; /* Flags of correct input */
+	char digitsAtInt = 0;
+	char points = 0;
+	for (strIndex = 0; strIndex < strlen(str); strIndex++) {
+		if (str[strIndex] == '.') {
+			points++;
+			continue;
+		}
+		str[strIndex] = getLowerCase(str[strIndex]);
+		if (isBetween(getCode(0), getCode(str[strIndex]), base - 1)) {
+			if (!points) {
+				digitsAtInt++;
+			}
+			else {
+				digitsAtFloat++;
+			}
+			continue;
+		}
+		
+		return 0;
+	}
+	if (points >= 2) {
+		return 0;
+	}
+	if ((!digitsAtInt) || ((points) && (!digitsAtFloat))) {
+		return 0;
+	}
+
+	return 1;
+}
+
 int main() {
 	FILE* in = fopen("in.txt", "r");
 	FILE* out = fopen("out.txt", "w");
-	int b1, b2; /* Numeral systems numbers */
-	fscanf(in, "%d %d ", &b1, &b2);
-	if ((!isBetween(MIN_SN, b1, MAX_SN)) || (!isBetween(MIN_SN, b2, MAX_SN))) {
-		fprintf(out, "bad input\n");
-		exit;
+	if ((!in) || (!out)) {
+		return;
 	}
 
-	char chr;
-	char b1Val[MAX_STRLEN];
-	char i = 0;
-	char digitsAtFloat = -1; /* Flags of correct input */
-	char digitsAtInt = 0;
-	while (1) {
-		if ((-1 == fscanf(in, "%c", &chr)) || (chr == '\n')) {
-			break;
-		}
-		chr = getLowerCase(chr);
-		if ((!(chr == '.')) && (!isBetween(0, getCode(chr), b1 - 1))) {
-			fprintf(out, "bad input\n");
-			exit;
-		}
-		if ((digitsAtFloat == 0) && (chr != '.')) {
-			digitsAtFloat = 1;
-		}
-		if (chr == '.') {
-			if ((digitsAtInt == 0) || (digitsAtFloat == 0)) {
-				break;
-			}
-			digitsAtFloat = 0;
+	int b1, b2; /* Numeral systems numbers */
+	char* b1Val = (char*)malloc(sizeof(char)*MAX_STRLEN);
+	char* b2Val;
+	fscanf(in, "%d %d ", &b1, &b2);
+	if (!(isBetween(MIN_SN, b1, MAX_SN)) || !(isBetween(MIN_SN, b2, MAX_SN))) {
+		fprintf(out, "bad input\n");
+	}
+	else {
+		fscanf(in, "%s ", b1Val);
+		if (checkValidation(b1Val, b1)) {
+			b2Val = decToStr(strToDec(b1Val, b1), b2);
+			fprintf(out, "%s", b2Val);
+			free(b2Val);
 		}
 		else {
-			digitsAtInt = 1;
+			fprintf(out, "bad input\n");
 		}
-		b1Val[i++] = chr;
-	}
-	b1Val[i] = '\0';
-	if ((digitsAtFloat == 0) || (digitsAtInt == 0)) {
-		fprintf(out, "bad input\n");
-		exit;
 	}
 
-	fprintf(out, "%s", decToStr(strToDec(b1Val, b1), b2));
-
-	exit;
+	free(b1Val);
+	fclose(in);
+	fclose(out);
 }
