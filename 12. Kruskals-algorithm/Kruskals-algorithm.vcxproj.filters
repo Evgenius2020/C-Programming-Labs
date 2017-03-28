@@ -21,12 +21,18 @@
     <ClCompile Include="Source\Initialize.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\MakeSpannigTree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DataTypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Initialize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MakeSpannigTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

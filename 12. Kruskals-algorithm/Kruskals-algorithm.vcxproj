@@ -21,10 +21,12 @@
   <ItemGroup>
     <ClCompile Include="Source\Initialize.c" />
     <ClCompile Include="Source\main.c" />
+    <ClCompile Include="Source\MakeSpannigTree.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\DataTypes.h" />
     <ClInclude Include="Source\Initialize.h" />
+    <ClInclude Include="Source\MakeSpannigTree.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F007D3D2-A22E-4394-B724-1E9C8A421150}</ProjectGuid>
@@ -80,12 +82,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

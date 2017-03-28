@@ -13,8 +13,8 @@ typedef struct Vertex {
 
 typedef struct InitializationResult {
 	char statusCode;
-	short verticiesN;
-	Vertex* verticies;
+	short verticesN;
+	Vertex* vertices;
 	int edgesN;
 	Edge* edges;
 } InitializationResult;

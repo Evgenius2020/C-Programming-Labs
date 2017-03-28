@@ -16,7 +16,7 @@ InitializationResult initialize(FILE* in) {
 	/* Reading number of vertices*/
 	fscanf(in, "%d ", &verticesN);
 	if (!isBetween(0, verticesN, MAX_VERTICES)) {
-		result.statusCode = INIT_BAD_VERTICIES_NUMBER;
+		result.statusCode = INIT_BAD_VERTICES_NUMBER;
 		return result;
 	}
 
@@ -51,8 +51,9 @@ InitializationResult initialize(FILE* in) {
 	}
 
 	result.edgesN = edgesN;
-	result.verticies = vertices;
-	result.verticiesN = verticesN;
+	result.edges = edges;
+	result.vertices = vertices;
+	result.verticesN = verticesN;
 	result.statusCode = INIT_SUCCESS;
 	return result;
 }
