@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../../Common/Stacks/Stack-int/Source/Stack.c"
+#include "Stack.h"
 
 #define MAX_STRLEN 1024
 #define isNumber(val) (('0' <= val) && (val <= '9'))
