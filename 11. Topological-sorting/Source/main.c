@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../Common/Stacks/Stack-int/Source/Stack.c"
+#include "Stack.h"
 
 #define maxVertices 1000
 #define maxEdges(n) n*(n-1)/2
@@ -76,7 +76,7 @@ InitializationResult initializeVerticies(FILE* in) {
 	Vertex* verticies;
 	Edge* buf;
 
-	if (-1 == fscanf(in, "%d", &verticiesN)) {
+	if (-1 == fscanf(in, "%d ", &verticiesN)) {
 		result.statusCode = INIT_BAD_LINES_NUMBER;
 		return result;
 	}
@@ -91,7 +91,7 @@ InitializationResult initializeVerticies(FILE* in) {
 		verticies[i].number = i + 1;
 	}
 
-	if (-1 == fscanf(in, "%d", &edgesN)) {
+	if (-1 == fscanf(in, "%d ", &edgesN)) {
 		result.statusCode = INIT_BAD_LINES_NUMBER;
 		return result;
 	}
