@@ -24,7 +24,7 @@
     <ClCompile Include="Source\Output.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Initiaalize.c">
+    <ClCompile Include="Source\Initialize.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

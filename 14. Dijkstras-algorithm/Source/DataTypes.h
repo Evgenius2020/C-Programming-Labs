@@ -6,7 +6,6 @@
 #define UNITIALIZED -1
 
 typedef struct Edge {
-	short from;
 	short to;
 	int length;
 	struct Edge* next;

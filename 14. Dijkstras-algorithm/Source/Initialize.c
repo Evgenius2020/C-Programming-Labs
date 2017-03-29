@@ -10,7 +10,8 @@
 InitializationResult initialize(FILE* in) {
 	InitializationResult result;
 	int verticiesN, edgesN;
-	int start, end; /* Vertices are ends of path. */
+	short start, end; /* Vertices are ends of path. */
+	short from;
 	int i;
 	Edge *buf;
 	Edge* bufReversed;
@@ -50,11 +51,15 @@ InitializationResult initialize(FILE* in) {
 	/* Reading edges from file. */
 	for (i = 0; i < edgesN; i++) {
 		buf = (Edge*)malloc(sizeof(Edge));
-		if (EOF == fscanf(in, "%hi %hi %d ", &buf->from, &buf->to, &buf->length)) {
+		if (EOF == fscanf(in, "%hi %hi %d ", &from, &buf->to, &buf->length)) {
 			result.statusCode = INIT_BAD_LINES_NUMBER;
 			return result;
 		}
-		if ((!isBetween(1, buf->from, verticiesN)) ||
+		if (from == buf->to) {
+			free(buf);
+			continue;
+		}
+		if ((!isBetween(1, from, verticiesN)) ||
 			(!isBetween(1, buf->to, verticiesN))) {
 			result.statusCode = INIT_BAD_VERTEX;
 			return result;
@@ -63,15 +68,14 @@ InitializationResult initialize(FILE* in) {
 			result.statusCode = INIT_BAD_LENGTH;
 			return result;
 		}
-		buf->next = verticies[buf->from - 1].edges;
-		verticies[buf->from - 1].edges = buf;
+		buf->next = verticies[from - 1].edges;
+		verticies[from - 1].edges = buf;
 
 		bufReversed = (Edge*)malloc(sizeof(Edge));
-		bufReversed->from = buf->to;
-		bufReversed->to = buf->from;
+		bufReversed->to = from;
 		bufReversed->length = buf->length;
-		bufReversed->next = verticies[bufReversed->from - 1].edges;
-		verticies[bufReversed->from - 1].edges = bufReversed;
+		bufReversed->next = verticies[buf->to - 1].edges;
+		verticies[buf->to - 1].edges = bufReversed;
 	}
 
 	result.vertices = verticies;

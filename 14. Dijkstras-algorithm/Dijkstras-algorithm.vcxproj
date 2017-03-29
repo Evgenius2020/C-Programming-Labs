@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\CalculateDistances.c" />
-    <ClCompile Include="Source\Initiaalize.c" />
+    <ClCompile Include="Source\Initialize.c" />
     <ClCompile Include="Source\main.c" />
     <ClCompile Include="Source\Output.c" />
   </ItemGroup>
