@@ -1,99 +1,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "PriorityQueue.h"
-
-#define MAX_VERTICES 5000
-#define MAX_EDGES(n) (n*(n-1)/2) 
-#define UNVIEWED 0
-#define VIEWED 1
-#define UNITIALIZED -1
+#include "Initialize.h"
+#include "DataTypes.h"
 
 #define exit fclose(in); fclose(out); free(verticies); return 0;
 #define isBetween(min, n, max) ((n >= min) && (n <= max))
 
-typedef struct Edge {
-	short from;
-	short to;
-	int length;
-	struct Edge* next;
-} Edge;
-
-typedef struct Vertex {
-	char viewed;
-	long long distance;
-	Edge* edges;
-} Vertex;
-
-int main() {
+void main() {
 	FILE* in = fopen("in.txt", "r");
 	FILE* out = fopen("out.txt", "w");
 
-	int verticiesN, edgesN;
-	int start, end; /* Vertices are ends of path. */
-	int i;
-	Edge *buf;
-	Vertex* verticies = NULL;
-
-	/* Reading number of vertices */
-	fscanf(in, "%d ", &verticiesN);
-	if (!isBetween(0, verticiesN, MAX_VERTICES)) {
-		fprintf(out, "bad number of vertices\n");
-		exit;
+	if ((!in) || (!out)) {
+		return;
 	}
 
-	verticies = (Vertex*)malloc(sizeof(Vertex) * verticiesN);
-	for (i = 0; i < verticiesN; i++) {
-		verticies[i].viewed = UNVIEWED;
-		verticies[i].distance = UNITIALIZED;
-		verticies[i].edges = NULL;
-	}
+	InitializationResult initResult = initialize(in);
 
-	fscanf(in, "%d %d ", &start, &end);
-	if ((!isBetween(0, start, verticiesN)) ||
-		(!isBetween(0, end, verticiesN))) {
-		fprintf(out, "bad number of vertex\n");
-		exit;
-	}
-	if (verticiesN == 0) {
-		fprintf(out, "bad vertex\n"); /* NICE TEST CASE BRO! */
-		exit;
-	}
-
-	fscanf(in, "%d ", &edgesN);
-	if (!isBetween(0, edgesN, MAX_EDGES(verticiesN))) {
-		fprintf(out, "bad number of edges\n");
-		exit;
-	}
-
-	Edge* bufReversed;
-	/* Reading edges from file. */
-	for (i = 0; i < edgesN; i++) {
-		buf = (Edge*)malloc(sizeof(Edge));
-		if (EOF == fscanf(in, "%hi %hi %d ", &buf->from, &buf->to, &buf->length)) {
-			fprintf(out, "bad number of lines\n");
-			exit;
+	InitializationResult initResult = initialize(in);
+	if (initResult.statusCode == INIT_SUCCESS) {
+		spannedvertices = makeSpanningTree(initResult, out);
+		if (spannedvertices != initResult.verticesN) {
+			rewind(out);
+			fprintf(out, "no spanning tree\n");
 		}
-		if ((!isBetween(1, buf->from, verticiesN)) ||
-			(!isBetween(1, buf->to, verticiesN))) {
-			fprintf(out, "bad vertex\n");
-			exit;
+
+		free(initResult.edges);
+		free(initResult.vertices);
+	}
+	else {
+		if (initResult.statusCode == INIT_BAD_EDGES_NUMBER) {
+			fprintf(out, "bad number of edges\n");
 		}
-		if (!isBetween(0, buf->length, INT_MAX)) {
+		if (initResult.statusCode == INIT_BAD_LENGTH) {
 			fprintf(out, "bad length\n");
-			exit;
 		}
-		buf->next = verticies[buf->from - 1].edges;
-		verticies[buf->from - 1].edges = buf;
-
-		bufReversed = (Edge*)malloc(sizeof(Edge));
-		bufReversed->from = buf->to;
-		bufReversed->to = buf->from;
-		bufReversed->length = buf->length;
-		bufReversed->next = verticies[bufReversed->from - 1].edges;
-		verticies[bufReversed->from - 1].edges = bufReversed;
+		if (initResult.statusCode == INIT_BAD_LINES_NUMBER) {
+			fprintf(out, "bad number of lines\n");
+		}
+		if (initResult.statusCode == INIT_BAD_VERTEX) {
+			fprintf(out, "bad vertex\n");
+		}
+		if (initResult.statusCode == INIT_BAD_VERTICES_NUMBER) {
+			fprintf(out, "bad number of vertices\n");
+		}
 	}
 
+	fclose(in);
+	fclose(out);
+}
 	int currVert = start;
 	verticies[currVert - 1].distance = 0;
 	PriorQueue* queue = priorQueueCreate(verticiesN);
