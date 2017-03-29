@@ -3,6 +3,7 @@
 #include "Initialize.h"
 #include "DataTypes.h"
 
+#define isBetween(min, n, max) ((n >= min) && (n <= max))
 #define MAX_VERTICES 5000
 #define MAX_EDGES(n) (n*(n-1)/2) 
 
@@ -19,6 +20,10 @@ InitializationResult initialize(FILE* in) {
 	fscanf(in, "%d ", &verticiesN);
 	if (!isBetween(0, verticiesN, MAX_VERTICES)) {
 		result.statusCode = INIT_BAD_VERTICES_NUMBER;
+		return result;
+	}
+	if (verticiesN == 0) {
+		result.statusCode = INIT_BAD_VERTEX; /* Test(#1) */
 		return result;
 	}
 
@@ -72,5 +77,7 @@ InitializationResult initialize(FILE* in) {
 	result.vertices = verticies;
 	result.verticesN = verticiesN;
 	result.statusCode = INIT_SUCCESS;
+	result.start = start;
+	result.end = end;
 	return result;
 }

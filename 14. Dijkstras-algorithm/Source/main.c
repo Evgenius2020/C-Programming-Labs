@@ -1,11 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Initialize.h"
+#include "Output.h"
 #include "DataTypes.h"
+#include "Initialize.h"
+#include "CalculateDistances.h"
 
-#define exit fclose(in); fclose(out); free(verticies); return 0;
-#define isBetween(min, n, max) ((n >= min) && (n <= max))
+void destroyVertices(Vertex* vertices, short verticesN) {
+	short i;
+	Edge* buf;
+
+	for (i = 0; i < verticesN; i++) {
+		while (vertices[i].edges) {
+			buf = vertices[i].edges->next;
+			free(vertices[i].edges);
+			vertices[i].edges = buf;
+		}
+	}
+	free(vertices);
+}
 
 void main() {
 	FILE* in = fopen("in.txt", "r");
@@ -16,17 +29,11 @@ void main() {
 	}
 
 	InitializationResult initResult = initialize(in);
-
-	InitializationResult initResult = initialize(in);
 	if (initResult.statusCode == INIT_SUCCESS) {
-		spannedvertices = makeSpanningTree(initResult, out);
-		if (spannedvertices != initResult.verticesN) {
-			rewind(out);
-			fprintf(out, "no spanning tree\n");
-		}
-
-		free(initResult.edges);
-		free(initResult.vertices);
+		calculateDistances(initResult.vertices, initResult.verticesN, initResult.start);
+		printDistances(initResult.vertices, initResult.verticesN, out);
+		printPath(initResult.vertices, initResult.start, initResult.end, out);
+		destroyVertices(initResult.vertices, initResult.verticesN);
 	}
 	else {
 		if (initResult.statusCode == INIT_BAD_EDGES_NUMBER) {
@@ -48,98 +55,4 @@ void main() {
 
 	fclose(in);
 	fclose(out);
-}
-	int currVert = start;
-	verticies[currVert - 1].distance = 0;
-	PriorQueue* queue = priorQueueCreate(verticiesN);
-	do {
-		verticies[currVert - 1].viewed = VIEWED;
-		/* Searching all edges proceeding from 'currVert', rewriting 'length' value if it's longer. */
-		for (buf = verticies[currVert - 1].edges; buf != NULL; buf = buf->next) {
-			if ((verticies[buf->to - 1].distance == UNITIALIZED) ||
-				(verticies[buf->to - 1].distance > verticies[currVert - 1].distance + buf->length)) {
-				if (buf->to != buf->from) {
-					verticies[buf->to - 1].distance = verticies[currVert - 1].distance + buf->length;
-					priorQueueInsert(queue, buf, verticies[buf->to - 1].distance);
-				}
-			}
-		}
-		/* Selecting nearest edge. */
-		currVert = UNITIALIZED;
-		while (queue->length != 0) {
-			buf = (Edge*)priorQueueExtractMin(queue);
-			if (verticies[buf->to - 1].viewed == UNVIEWED) {
-				currVert = buf->to;
-				break;
-			}
-		}
-	} while (currVert != UNITIALIZED);
-	priorQueueDestroy(queue);
-
-	int intMaxCount = 0;
-	if (start != end) {
-		buf = verticies[end - 1].edges;
-		while (buf) {
-			if (verticies[buf->to].distance > INT_MAX) {
-				intMaxCount++;
-			}
-			buf = buf->next;
-		}
-	}
-
-	/* Output block. */
-	for (i = 0; i < verticiesN; i++) {
-		if (verticies[i].distance > INT_MAX) {
-			fprintf(out, "INT_MAX+ ");
-			continue;
-		}
-		if (verticies[i].distance != UNITIALIZED) {
-			fprintf(out, "%lli ", verticies[i].distance);
-		}
-		else {
-			fprintf(out, "oo ");
-		}
-	}
-	fprintf(out, "\n");
-	if (verticies[end - 1].distance == UNITIALIZED) {
-		fprintf(out, "no path\n");
-		exit;
-	}
-	if (intMaxCount >= 2) {
-		fprintf(out, "overflow\n");
-		exit;
-	}
-
-	currVert = end;
-	int crutch;
-	while (1) {
-		fprintf(out, "%d ", currVert);
-		if (currVert == start) {
-			for (i = 0; i < verticiesN; i++) {
-				while (verticies[i].edges) {
-					buf = verticies[i].edges->next;
-					free(verticies[i].edges);
-					verticies[i].edges = buf;
-				}
-			}
-			exit;
-		}
-		for (buf = verticies[currVert - 1].edges; buf != NULL; buf = buf->next) {
-			if (verticies[currVert - 1].distance - buf->length == verticies[buf->to - 1].distance) {
-				/* bad code (test #49) */
-				crutch = buf->to;
-				buf = buf->next;
-				if (buf) {
-					if (verticies[currVert - 1].distance - buf->length == verticies[buf->to - 1].distance) {
-						currVert = buf->to;
-						break;
-					}
-				}
-				currVert = crutch;
-				break;
-			}
-		}
-	}
-
-	exit;
 }

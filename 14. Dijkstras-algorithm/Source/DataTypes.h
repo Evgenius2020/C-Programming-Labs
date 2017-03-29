@@ -22,6 +22,8 @@ typedef struct InitializationResult {
 	char statusCode;
 	Vertex* vertices;
 	short verticesN;
+	short start;
+	short end;
 }InitializationResult;
 
 #endif
