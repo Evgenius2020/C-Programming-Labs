@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11. Topological-sorting", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "13. Prims-algorithm", "13. Prims-algorithm\Prims-algorithm.vcxproj", "{6688CD80-2D97-435D-907E-0FB024304F8F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "12. Kruskals-algorithm", "12. Kruskals-algorithm\Kruskals-algorithm.vcxproj", "{F007D3D2-A22E-4394-B724-1E9C8A421150}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -125,6 +127,14 @@ Global
 		{6688CD80-2D97-435D-907E-0FB024304F8F}.Release|x64.Build.0 = Release|x64
 		{6688CD80-2D97-435D-907E-0FB024304F8F}.Release|x86.ActiveCfg = Release|Win32
 		{6688CD80-2D97-435D-907E-0FB024304F8F}.Release|x86.Build.0 = Release|Win32
+		{F007D3D2-A22E-4394-B724-1E9C8A421150}.Debug|x64.ActiveCfg = Debug|x64
+		{F007D3D2-A22E-4394-B724-1E9C8A421150}.Debug|x64.Build.0 = Debug|x64
+		{F007D3D2-A22E-4394-B724-1E9C8A421150}.Debug|x86.ActiveCfg = Debug|Win32
+		{F007D3D2-A22E-4394-B724-1E9C8A421150}.Debug|x86.Build.0 = Debug|Win32
+		{F007D3D2-A22E-4394-B724-1E9C8A421150}.Release|x64.ActiveCfg = Release|x64
+		{F007D3D2-A22E-4394-B724-1E9C8A421150}.Release|x64.Build.0 = Release|x64
+		{F007D3D2-A22E-4394-B724-1E9C8A421150}.Release|x86.ActiveCfg = Release|Win32
+		{F007D3D2-A22E-4394-B724-1E9C8A421150}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
