@@ -4,6 +4,7 @@
 [Dd]ebug/
 [Rr]elease/
 *.opendb
+*.tlog/
 .vs/
 *.db
 in
