@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define exit fclose(in); fclose(out); return 0;
-
 int main() {
 	FILE *in = fopen("in.txt", "r");
 	FILE* out = fopen("out.txt", "w");
@@ -37,5 +35,7 @@ int main() {
 		j = 0;
 	}
 
-	exit;
+	fclose(in);
+	fclose(out); 
+	return 0;
 }
