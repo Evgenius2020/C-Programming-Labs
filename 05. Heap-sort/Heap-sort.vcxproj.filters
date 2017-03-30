@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="Source\Heap.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Heap.c">
+    <ClCompile Include="Source\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Heap.h">
+    <ClInclude Include="Source\Heap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
