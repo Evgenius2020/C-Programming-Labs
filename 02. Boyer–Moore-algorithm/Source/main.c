@@ -4,35 +4,41 @@
 int main() {
 	FILE *in = fopen("in.txt", "r");
 	FILE* out = fopen("out.txt", "w");
+	if ((!in) || (!out)) {
+		return;
+	}
 
-	char templt[17];
-	fscanf(in, "%s ", templt);
-
+	char templt[18];
 	char shifts[256];
-	int i;
+	char text[256];
+	short i, j;
+
+	if (fgets(templt, 18, in) == NULL) {
+		return;
+	}
+	if (templt[strlen(templt) - 1] == '\n') {
+		templt[strlen(templt) - 1] = '\0';
+	}
+	if (fgets(text, 256, in) == NULL) {
+		return;
+	}
+
 	for (i = 0; i < 256; i++) {
 		shifts[i] = strlen(templt);
 	}
-	for (i = 0; i < strlen(templt); i++) {
-		shifts[templt[i]] = strlen(templt) - i - 1;
+	for (i = 0; i < strlen(templt) - 1; i++) {
+		shifts[(unsigned char)templt[i]] = strlen(templt) - i - 1;
 	}
 
-	char text[256];
 	i = strlen(templt) - 1;
-	int j = 0;
-	fgets(text, 256, in);
 	while (i < strlen(text)) {
-		fprintf(out, "%d ", i - j + 1);
-		if (i - j >= 0) {
-			if (text[i - j] == templt[strlen(templt) - 1 - j]) {
-				j++;
-				if (j != strlen(templt)) { 
-					continue;
-				}
+		for (j = 0; j < strlen(templt); j++) {
+			fprintf(out, "%d ", i - j + 1);
+			if (templt[strlen(templt) - 1 - j] != text[i - j]) {
+				break;
 			}
 		}
-		i += shifts[text[i - j]];
-		j = 0;
+		i += shifts[(unsigned char)text[i]];
 	}
 
 	fclose(in);
