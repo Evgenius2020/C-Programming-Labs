@@ -1,45 +1,47 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void quickSort(int* mass, int left, int right) {
-	if (left >= right) {
+void quickSort(int* mass, int l, int r) {
+	if (l >= r) {
 		return;
 	}
-	int pivot = right;
-	int i = left, j = right - 1;
-	while (i != j) {
-		if (mass[i] < mass[pivot]) {
+
+	int pivot, buf;
+	int i = l;
+	int j = r;
+	pivot = mass[(l + r) / 2];
+	do {
+		while (mass[i] < pivot) {
 			i++;
-			continue;
 		}
-		if (mass[j] > mass[pivot]) {
+		while (pivot < mass[j]) {
 			j--;
-			continue;
 		}
-		mass[i] += mass[j];
-		mass[j] = mass[i] - mass[j];
-		mass[i] -= mass[j];
-	}
+		if (i <= j) {
+			buf = mass[i];
+			mass[i] = mass[j];
+			mass[j] = buf;
+			i++;
+			j--;
+		}
+	} while (i < j);
 
-	if (mass[pivot] < mass[j]) {
-		mass[pivot] += mass[j];
-		mass[j] = mass[pivot] - mass[j];
-		mass[pivot] -= mass[j];
-	}
-
-	quickSort(mass, 0, i);
-	quickSort(mass, j + 1, right);
+	quickSort(mass, l, j);
+	quickSort(mass, i, r);
 }
 
-int main() {
+void main() {
 	FILE* in = fopen("in.txt", "r");
 	FILE* out = fopen("out.txt", "w");
+	if ((!in) || (!out)) {
+		return;
+	}
 
-	int size;
+	int size, i;
+	int* mass;
+
 	fscanf(in, "%d ", &size);
-
-	int i;
-	int* mass = (int*)malloc(sizeof(int)*size);
+	mass = (int*)malloc(sizeof(int)*size);
 	for (i = 0; i < size; i++) {
 		fscanf(in, "%d ", &mass[i]);
 	}
@@ -52,5 +54,4 @@ int main() {
 
 	fclose(in);
 	fclose(out);
-	return 0;
 }
