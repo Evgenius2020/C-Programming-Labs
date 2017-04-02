@@ -19,11 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Heap.c" />
     <ClCompile Include="Source\main.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Source\Heap.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1CE1EF14-094F-4FC3-BAAC-2B2E834FB81B}</ProjectGuid>
