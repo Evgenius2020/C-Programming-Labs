@@ -1,5 +1,27 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+char* readTemplate(FILE* in) {
+	char* result = (char*)malloc(sizeof(char) * 18);
+	if (fgets(result, 18, in) == NULL) {
+		return;
+	}
+	if (result[strlen(result) - 1] == '\n') {
+		result[strlen(result) - 1] = '\0';
+	}
+	return result;
+}
+
+char* readText(FILE* in) {
+	char* result = (char*)malloc(sizeof(char) * 256);
+	result[0] = '\0';
+	char newString[256];
+	while (fgets(newString, 256, in)) {
+		strcat(result, newString);
+	}
+	return result;
+}
 
 int main() {
 	FILE *in = fopen("in.txt", "r");
@@ -8,21 +30,13 @@ int main() {
 		return;
 	}
 
-	char templt[18];
 	char shifts[256];
-	char text[256];
 	short i, j;
-
-	if (fgets(templt, 18, in) == NULL) {
+	char* templt = readTemplate(in);
+	char* text = readText(in);
+	if (!strlen(text)) {
 		return;
 	}
-	if (templt[strlen(templt) - 1] == '\n') {
-		templt[strlen(templt) - 1] = '\0';
-	}
-	if (fgets(text, 256, in) == NULL) {
-		return;
-	}
-
 	for (i = 0; i < 256; i++) {
 		shifts[i] = strlen(templt);
 	}
