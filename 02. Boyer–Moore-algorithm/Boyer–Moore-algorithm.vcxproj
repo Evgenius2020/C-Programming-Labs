@@ -20,6 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.c" />
+    <ClCompile Include="Source\RingBuffer.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\RingBuffer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FB6F1434-EB95-4CD1-AC12-81B88701B0AA}</ProjectGuid>
