@@ -32,13 +32,21 @@ void ringBufferDestroy(RingBufferElement* element) {
 }
 
 RingBufferElement* ringBufferRead(FILE* in, RingBufferElement* curr, short bytes) {
-	while (bytes) {
-		curr = curr->next;
-		curr->chr = fgetc(in);
-		if (curr->chr == EOF) {
-			break;
+	short i;
+	unsigned char* buf = malloc(sizeof(char)*bytes);
+	if (bytes == fread(buf, sizeof(char), bytes, in)) {
+		for (i = 0; i < bytes; i++) {
+			curr = curr->next;
+			curr->chr = buf[i];
+			if (curr->chr == EOF) {
+				break;
+			}
 		}
-		bytes--;
 	}
+	else {
+		curr->chr = EOF;
+	}
+
+	free(buf);
 	return curr;
 }
