@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include "RingBuffer.h"
 
-RingBufferElement* ringBufferBuild(short length) {
+RingBuffer* ringBufferBuild(short length) {
 	if (!length) {
 		return NULL;
 	}
 
+	RingBuffer* result = (RingBuffer*)malloc(sizeof(RingBuffer));
 	RingBufferElement* begin = (RingBufferElement*)malloc(sizeof(RingBufferElement));
 	RingBufferElement* prev = begin;
 	RingBufferElement* curr = begin;
@@ -19,34 +20,34 @@ RingBufferElement* ringBufferBuild(short length) {
 	curr->next = begin;
 	begin->prev = curr;
 
-	return begin;
+	result->buffer = (unsigned char*)calloc(length, sizeof(char));
+	result->currElement = begin;
+	return result;
 }
 
-void ringBufferDestroy(RingBufferElement* element) {
-	RingBufferElement* buf = element;
-	while (buf != element) {
+void ringBufferDestroy(RingBuffer* ringBuffer) {
+	RingBufferElement* buf = ringBuffer->currElement->next;
+	while (buf != ringBuffer->currElement) {
 		buf = buf->next;
 		free(buf->prev);
 	}
-	free(element);
+	free(ringBuffer->currElement);
+	free(ringBuffer->buffer);
+	free(ringBuffer);
 }
 
-RingBufferElement* ringBufferRead(FILE* in, RingBufferElement* curr, short bytes) {
+void ringBufferRead(FILE* in, RingBuffer* ringBuffer, short bytes) {
 	short i;
-	unsigned char* buf = malloc(sizeof(char)*bytes);
-	if (bytes == fread(buf, sizeof(char), bytes, in)) {
+	if (bytes == fread(ringBuffer->buffer, sizeof(unsigned char), bytes, in)) {
 		for (i = 0; i < bytes; i++) {
-			curr = curr->next;
-			curr->chr = buf[i];
-			if (curr->chr == EOF) {
+			ringBuffer->currElement = ringBuffer->currElement->next;
+			ringBuffer->currElement->chr = ringBuffer->buffer[i];
+			if (ringBuffer->currElement->chr == EOF) {
 				break;
 			}
 		}
 	}
 	else {
-		curr->chr = EOF;
+		ringBuffer->currElement->chr = EOF;
 	}
-
-	free(buf);
-	return curr;
 }

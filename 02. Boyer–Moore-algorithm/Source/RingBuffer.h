@@ -7,10 +7,15 @@ typedef struct RingBufferElement {
 	unsigned char chr;
 } RingBufferElement;
 
-RingBufferElement* ringBufferBuild(short length);
+typedef struct RingBuffer {
+	unsigned char* buffer;
+	RingBufferElement* currElement;
+}RingBuffer;
 
-void ringBufferDestroy(RingBufferElement* element);
+RingBuffer* ringBufferBuild(short length);
 
-RingBufferElement* ringBufferRead(FILE* in, RingBufferElement* curr, short bytes);
+void ringBufferDestroy(RingBuffer* ringBuffer);
+
+void ringBufferRead(FILE* in, RingBuffer* ringBuffer, short bytes);
 
 #endif

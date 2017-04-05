@@ -25,9 +25,9 @@ int main() {
 	short i;
 	unsigned long long textPos;
 	unsigned char* templt = readTemplate(in);
-	RingBufferElement* curr = ringBufferBuild(strlen(templt));
+	RingBuffer* ringBuffer = ringBufferBuild(strlen(templt));
 	RingBufferElement* buf;
-	ringBufferRead(in, curr, strlen(templt));
+	ringBufferRead(in, ringBuffer, strlen(templt));
 	textPos = strlen(templt);
 
 	for (i = 0; i < 256; i++) {
@@ -38,8 +38,8 @@ int main() {
 	}
 
 	i = strlen(templt);
-	buf = curr;
-	while (curr->chr != 255) {
+	buf = ringBuffer->currElement;
+	while (buf->chr != 255) {
 		if (i > 0) {
 			fprintf(out, "%d ", textPos - (strlen(templt) - i));
 			if (buf->chr == templt[i - 1]) {
@@ -49,13 +49,13 @@ int main() {
 			}
 		}
 
-		textPos += shifts[curr->chr];
-		curr = ringBufferRead(in, curr, shifts[curr->chr]);
-		buf = curr;
+		textPos += shifts[ringBuffer->currElement->chr];
+		ringBufferRead(in, ringBuffer, shifts[ringBuffer->currElement->chr]);
+		buf = ringBuffer->currElement;
 		i = strlen(templt);
 	}
 
-	ringBufferDestroy(curr);
+	//ringBufferDestroy(ringBuffer);
 	fclose(in);
 	fclose(out); 
 }
