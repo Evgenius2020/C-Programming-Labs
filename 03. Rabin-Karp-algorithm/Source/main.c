@@ -1,49 +1,53 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include "RingBuffer.h"
 
-void action(FILE* in, FILE* out) {
-	char templt[17];
-	char text[256];
-	long templtHash = 0;
-	long textHash = 0;
-	short i;
-	long long textPos = 1;
-
-	fgets(templt, 17, in);
-	if ((templt[strlen(templt) - 1]) == '\n') {
-		templt[strlen(templt) - 1] = '\0';
-	}
-	if (!fgets(text, 256, in)) {
-		text[0] = '\0';
-	}
-	if (strlen(templt) > strlen(text)) {
+unsigned char* readTemplate(FILE* in) {
+	unsigned char* result = (unsigned char*)malloc(sizeof(char) * 18);
+	if (fgets(result, 18, in) == NULL) {
 		return;
 	}
+	if (result[strlen(result) - 1] == '\n') {
+		result[strlen(result) - 1] = '\0';
+	}
+	return result;
+}
+
+void searchMatches(FILE* in, FILE* out, char* templt) {
+	RingBuffer* ringBuffer = ringBufferBuild(strlen(templt));
+	RingBufferElement* buf;
+	short i;
+	long long textPos = 1;
+	long templtHash = 0;
+	long textHash = 0;
+
 	for (i = 0; i < strlen(templt); i++) {
 		templtHash += (templt[i] % 3) * pow(3, i);
-		textHash += (text[i] % 3) * pow(3, i);
+		ringBufferRead(in, ringBuffer, 1);
+		textHash += (ringBuffer->currElement->chr % 3) * pow(3, i);
 	}
 	textPos += strlen(templt);
 	fprintf(out, "%d ", templtHash);
 
-	while (1) {
+	while (!ringBuffer->eofFlag) {
 		if (templtHash == textHash) {
-			for (i = 0; i < strlen(templt); i++) {
-				if (text[textPos - strlen(templt) + i] == templt[i]) {
-					fprintf(out, "%d ", textPos - strlen(templt) + i + 1);
-				}
-				else {
-					break;
-				}
+			i = 0;
+			buf = ringBuffer->currElement->next;
+			while ((buf->chr == templt[i]) && (i < strlen(templt))) {
+				fprintf(out, "%d ", textPos - strlen(templt) + i);
+				i++;
+				buf = buf->next;
 			}
 		}
-		if (textPos >= strlen(text)) {
-			break;
-		}
+
+		ringBufferRead(in, ringBuffer, 1);
 		textHash /= 3;
-		textHash += (text[textPos++] % 3) * pow(3, strlen(templt) - 1);
+		textHash += (ringBuffer->currElement->chr % 3) * pow(3, strlen(templt) - 1);
+		textPos++;
 	}
+
+	ringBufferDestroy(ringBuffer);
 }
 
 void main() {
@@ -53,8 +57,10 @@ void main() {
 		return;
 	}
 
-	action(in, out);
+	char* templt = readTemplate(in);
+	searchMatches(in, out, templt);
 
+	free(templt);
 	fclose(in);
 	fclose(out);
 }
