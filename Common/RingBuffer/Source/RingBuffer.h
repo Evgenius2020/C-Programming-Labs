@@ -8,8 +8,8 @@ typedef struct RingBufferElement {
 } RingBufferElement;
 
 typedef struct RingBuffer {
-	unsigned char* buffer;
 	RingBufferElement* currElement;
+	char* strBuf;
 	char eofFlag;
 }RingBuffer;
 
