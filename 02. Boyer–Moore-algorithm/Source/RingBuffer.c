@@ -11,6 +11,7 @@ RingBuffer* ringBufferBuild(short length) {
 	RingBufferElement* begin = (RingBufferElement*)malloc(sizeof(RingBufferElement));
 	RingBufferElement* prev = begin;
 	RingBufferElement* curr = begin;
+
 	for (length--; length > 0; length--) {
 		curr = (RingBufferElement*)malloc(sizeof(RingBufferElement));
 		curr->prev = prev;
@@ -20,7 +21,8 @@ RingBuffer* ringBufferBuild(short length) {
 	curr->next = begin;
 	begin->prev = curr;
 
-	result->buffer = (unsigned char*)calloc(length, sizeof(char));
+	result->eofFlag = 0;
+	result->buffer = (unsigned char*)calloc(length, sizeof(unsigned char));
 	result->currElement = begin;
 	return result;
 }
@@ -32,22 +34,19 @@ void ringBufferDestroy(RingBuffer* ringBuffer) {
 		free(buf->prev);
 	}
 	free(ringBuffer->currElement);
-	free(ringBuffer->buffer);
 	free(ringBuffer);
 }
 
-void ringBufferRead(FILE* in, RingBuffer* ringBuffer, short bytes) {
+char ringBufferRead(FILE* in, RingBuffer* ringBuffer, short bytes) {
 	short i;
-	if (bytes == fread(ringBuffer->buffer, sizeof(unsigned char), bytes, in)) {
+	char readed = fread(ringBuffer->buffer, sizeof(char), bytes, in);
+	if (readed == bytes) {
 		for (i = 0; i < bytes; i++) {
 			ringBuffer->currElement = ringBuffer->currElement->next;
 			ringBuffer->currElement->chr = ringBuffer->buffer[i];
-			if (ringBuffer->currElement->chr == EOF) {
-				break;
-			}
 		}
 	}
 	else {
-		ringBuffer->currElement->chr = EOF;
+		ringBuffer->eofFlag = 1;
 	}
 }
