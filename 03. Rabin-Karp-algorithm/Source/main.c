@@ -2,13 +2,7 @@
 #include <string.h>
 #include <math.h>
 
-void main() {
-	FILE* in = fopen("in.txt", "r");
-	FILE* out = fopen("out.txt", "w");
-	if ((!in) || (!out)) {
-		return;
-	}
-
+void action(FILE* in, FILE* out) {
 	char templt[17];
 	char text[256];
 	long templtHash = 0;
@@ -50,6 +44,16 @@ void main() {
 		textHash /= 3;
 		textHash += (text[textPos++] % 3) * pow(3, strlen(templt) - 1);
 	}
+}
+
+void main() {
+	FILE* in = fopen("in.txt", "r");
+	FILE* out = fopen("out.txt", "w");
+	if ((!in) || (!out)) {
+		return;
+	}
+
+	action(in, out);
 
 	fclose(in);
 	fclose(out);
