@@ -13,11 +13,11 @@ char* makeFileName(int testNumber) {
 	return filename;
 }
 
-int main() {
-	FILE* in = fopen("in.txt", "r");
-	FILE* out = fopen("out.txt", "w");
+void main() {
+	FILE* in = fopen("in.txt", "rb");
+	FILE* out = fopen("out.txt", "wb");
 
-	int currTest = 1;
+	/*int currTest = 1;
 	FILE* copy;
 	while (1){
 		copy = fopen(makeFileName(currTest), "r");
@@ -36,7 +36,7 @@ int main() {
 		fputc(curr, copy);
 	}
 	fclose(copy);
-	rewind(in);
+	rewind(in);*/
 
 	char buf[5];
 	fgets(&buf, 5, in);
@@ -50,5 +50,4 @@ int main() {
 
 	fclose(in);
 	fclose(out);
-	return 0;
 }

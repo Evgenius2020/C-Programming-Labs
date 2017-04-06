@@ -3,8 +3,6 @@
 #include "Decoding.h"
 #include "BiteReader.h"
 
-#define exit() return
-
 typedef struct DecodeNode {
 	struct DecodeNode* left;
 	struct DecodeNode* right;
@@ -18,6 +16,14 @@ DecodeNode* createDecodeNode() {
 	node->right = NULL;
 
 	return node;
+}
+
+void destroyTree(DecodeNode* tree) {
+	if (tree) {
+		free(tree->left);
+		free(tree->right);
+		free(tree);
+	}
 }
 
 /* Reading code of tree from the file, generates coding tree */
@@ -79,4 +85,7 @@ void decode(FILE* in, FILE* out) {
 	DecodeNode* root = generateTree(reader, encodedChars); /* Coding tree */
 	biteReaderDequeue(reader, biteReaderDequeue(reader, 3)); /* Skips fakes.*/
 	regainText(reader, root, out); /* Encoded text */
+
+	biteReaderDestroy(reader);
+	destroyTree(root);
 }

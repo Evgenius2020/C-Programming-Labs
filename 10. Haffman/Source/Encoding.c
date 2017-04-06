@@ -82,12 +82,13 @@ char** generateCodes(int* freq) {
 			buf = parent;
 		}
 	}
+
 	priorQueueDestroy(queue);
 	free(leaves);
 	return codes;
 }
 
-char serializeCodes(char** codes, BiteWriter* writer) {
+void serializeCodes(char** codes, BiteWriter* writer) {
 	short i, j;
 	for (i = 0; i < 256; i++) {
 		if (codes[i]) {
@@ -98,8 +99,6 @@ char serializeCodes(char** codes, BiteWriter* writer) {
 			}
 		}
 	}
-
-	return writer->bitesN;
 }
 
 void oneCharAlphabetCase(FILE* in, FILE* out, char chr, int freq) {
@@ -120,7 +119,8 @@ void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq, char alphabetSize) {
 	BiteWriter* writer = biteWriterCreate(out);
 	biteWriterEnqueue(writer, 8, alphabetSize); /* Alphabet size */
 	char** codes = generateCodes(freq);
-	short freeBites = serializeCodes(codes, writer); /* Serialized codes */
+	serializeCodes(codes, writer); /* Serialized codes */
+	short freeBites = writer->bitesN;
 	short i;
 	for (i = 0; i < 256; i++) {
 		if (freq[i]) {
@@ -132,6 +132,9 @@ void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq, char alphabetSize) {
 	biteWriterEnqueue(writer, 3, (8 - freeBites) % 8); /* Number of fakes*/
 	biteWriterEnqueue(writer, (8 - freeBites) % 8, 0); /* Fakes*/
 	encodeText(in, writer, codes); /* Encoded text */
+
+	biteWriterDestroy(writer);
+	free(codes);
 }
 
 void encode(FILE* in, FILE* out) {
@@ -156,4 +159,6 @@ void encode(FILE* in, FILE* out) {
 	if (alphabetSize > 1) {
 		manyCharsAlphabetCase(in, out , freq, alphabetSize);
 	}
+
+	free(freq);
 }
