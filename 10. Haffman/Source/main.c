@@ -4,10 +4,11 @@
 #include "Encoding.h"
 #include "Decoding.h"
 
-char* makeFileName(char testName) {
-	char* filename = (char*)calloc(5 + 5 + 1, sizeof(char));
+char* makeFileName(int testNumber) {
+	char buff[8];
+	char* filename = (char*)calloc(25, sizeof(char));
 	strcat(filename, "test/");
-	filename[5] = testName;
+	strcat(filename, itoa(testNumber, buff, 10));
 	strcat(filename, ".txt");
 	return filename;
 }
@@ -16,7 +17,7 @@ int main() {
 	FILE* in = fopen("in.txt", "r");
 	FILE* out = fopen("out.txt", "w");
 
-	char currTest = 'a';
+	int currTest = 1;
 	FILE* copy;
 	while (1){
 		copy = fopen(makeFileName(currTest), "r");
