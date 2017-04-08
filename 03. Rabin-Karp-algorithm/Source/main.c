@@ -14,13 +14,14 @@ unsigned char* readTemplate(FILE* in) {
 	return result;
 }
 
-void searchMatches(FILE* in, FILE* out, char* templt) {
+void searchMatches(FILE* in, FILE* out, unsigned char* templt) {
 	RingBuffer* ringBuffer = ringBufferBuild(strlen(templt));
 	RingBufferElement* buf;
 	short i;
 	long long textPos = 1;
 	long templtHash = 0;
 	long textHash = 0;
+	long degree = pow(3, strlen(templt) - 1); /* Hash recalculation optimization */
 
 	for (i = 0; i < strlen(templt); i++) {
 		templtHash += (templt[i] % 3) * pow(3, i);
@@ -34,16 +35,18 @@ void searchMatches(FILE* in, FILE* out, char* templt) {
 		if (templtHash == textHash) {
 			i = 0;
 			buf = ringBuffer->currElement->next;
-			while ((buf->chr == templt[i]) && (i < strlen(templt))) {
+			for (i = 0; i < strlen(templt); i++) {
 				fprintf(out, "%d ", textPos - strlen(templt) + i);
-				i++;
+				if (buf->chr != templt[i]) {
+					break;
+				}
 				buf = buf->next;
 			}
 		}
 
 		ringBufferRead(in, ringBuffer, 1);
 		textHash /= 3;
-		textHash += (ringBuffer->currElement->chr % 3) * pow(3, strlen(templt) - 1);
+		textHash += (ringBuffer->currElement->chr % 3) * degree;
 		textPos++;
 	}
 
