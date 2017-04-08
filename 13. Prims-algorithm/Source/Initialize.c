@@ -25,6 +25,7 @@ InitializationResult initialize(FILE* in) {
 	for (i = 0; i < verticesN; i++) {
 		vertices[i].viewed = UNVIEWED;
 		vertices[i].edges = NULL;
+		vertices[i].number = i + 1;
 	}
 
 	fscanf(in, "%d ", &edgesN);

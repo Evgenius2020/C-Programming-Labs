@@ -14,6 +14,7 @@ typedef struct Edge {
 typedef struct Vertex {
 	char viewed;
 	Edge* edges;
+	short number;
 } Vertex;
 
 typedef struct InitializationResult {
