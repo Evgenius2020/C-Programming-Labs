@@ -9,7 +9,7 @@
 
 InitializationResult initialize(FILE* in) {
 	InitializationResult result;
-	int i, verticesN, edgesN;
+	int i, from, verticesN, edgesN;
 	Vertex* vertices;
 	Edge* buf;
 	Edge* bufReversed;
@@ -23,9 +23,10 @@ InitializationResult initialize(FILE* in) {
 
 	vertices = (Vertex*)calloc(sizeof(Vertex), verticesN);
 	for (i = 0; i < verticesN; i++) {
-		vertices[i].viewed = UNVIEWED;
+		vertices[i].nearest = NO_NEAREST;
 		vertices[i].edges = NULL;
 		vertices[i].number = i + 1;
+		vertices[i].queueIndex = i;
 	}
 
 	fscanf(in, "%d ", &edgesN);
@@ -37,11 +38,11 @@ InitializationResult initialize(FILE* in) {
 	/*Reading edges from file.*/
 	for (i = 0; i < edgesN; i++) {
 		buf = (Edge*)malloc(sizeof(Edge));
-		if (EOF == fscanf(in, "%d %d %d ", &(buf->from), &(buf->to), &(buf->length))) {
+		if (EOF == fscanf(in, "%d %d %d ", &from, &(buf->to), &(buf->length))) {
 			result.statusCode = INIT_BAD_LINES_NUMBER;
 			return result;
 		}
-		if ((!isBetween(1, buf->from, verticesN)) ||
+		if ((!isBetween(1, from, verticesN)) ||
 			(!isBetween(1, buf->to, verticesN))) {
 			result.statusCode = INIT_BAD_VERTEX;
 			return result;
@@ -50,12 +51,12 @@ InitializationResult initialize(FILE* in) {
 			result.statusCode = INIT_BAD_LENGTH;
 			return result;
 		}
-		buf->next = vertices[buf->from - 1].edges;
-		vertices[buf->from - 1].edges = buf;
+		buf->next = vertices[from - 1].edges;
+		vertices[from - 1].edges = buf;
+
 		bufReversed = (Edge*)malloc(sizeof(Edge));
 		bufReversed->length = buf->length;
-		bufReversed->to = buf->from;
-		bufReversed->from = buf->to;
+		bufReversed->to = from;
 		bufReversed->next = vertices[buf->to - 1].edges;
 		vertices[buf->to - 1].edges = bufReversed;
 	}

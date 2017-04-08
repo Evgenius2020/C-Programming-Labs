@@ -72,12 +72,16 @@ t_index priorQueueInsert(PriorQueue* priorQueue, void* value, t_key key, t_index
 }
 
 t_index priorQueueUpdateKey(PriorQueue* priorQueue, t_index index, t_key key) {
-	if ((!priorQueue) || (index >= priorQueue->elements) || (priorQueue->elements[index].key <= key)) {
+	if ((!priorQueue) || (index >= priorQueue->length)) {
 		return index;
 	}
 	priorQueue->elements[index].key = key;
+	while ((index > 0) && (priorQueue->elements[index / 2].key > priorQueue->elements[index].key)) {
+		swapElements(priorQueue, index, index / 2);
+		index /= 2;
+	}
 
-	return heapify(priorQueue, index + 1);
+	return index;
 }
 
 void* priorQueueExtractMin(PriorQueue* priorQueue) {
@@ -88,6 +92,7 @@ void* priorQueueExtractMin(PriorQueue* priorQueue) {
 	void* minValue = priorQueue->elements[0].value;
 	priorQueue->length--;
 	priorQueue->elements[0] = priorQueue->elements[priorQueue->length];
+	*priorQueue->elements[0].index = 0;
 	heapify(priorQueue, 1);
 
 	return minValue;

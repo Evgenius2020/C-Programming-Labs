@@ -7,32 +7,31 @@ short makeSpanningTree(Vertex* vertices, short verticesN, FILE* out) {
 	if (!verticesN) {
 		return -1;
 	}
-	PriorQueue* queue = priorQueueCreate(verticesN);
-	short nearest = 1;
-	int spannedVertices = 0;
+	PriorQueue* priorQueue = priorQueueCreate(verticesN);
+	Edge* spanningTree = NULL;
+	Vertex* currVert;
 	Edge* buf;
-	Vertex* curr;
+	short i, spannedVertices = 1;
 
-	while (1) {
-		for (buf = vertices[nearest - 1].edges; buf; buf = buf->next) {
-			if (vertices[buf->to - 1].viewed == UNVIEWED) {
-				priorQueueInsert(queue, &vertices[buf->to - 1], buf->length);
+	priorQueueInsert(priorQueue, &vertices[0], 0, &vertices[0].queueIndex);
+	for (i = 1; i < verticesN; i++) {
+		priorQueueInsert(priorQueue, &vertices[i], INF, &vertices[i].queueIndex);
+	}
+	while (priorQueue->length) {
+		currVert = (Vertex*)priorQueueExtractMin(priorQueue);
+		currVert->viewed = VIEWED;
+		for (buf = currVert->edges; buf; buf = buf->next) {
+			if ((vertices[buf->to - 1].viewed == UNVIEWED) && (buf->length < priorQueue->elements[vertices[buf->to - 1].queueIndex].key)) {
+				priorQueueUpdateKey(priorQueue, vertices[buf->to - 1].queueIndex, buf->length);
+				vertices[buf->to - 1].nearest = currVert->number;
 			}
 		}
-		while (!priorQueueIsEmpty(queue)) {
-			if (((Vertex*)priorQueueGetMinValue)->viewed == VIEWED) {
-				priorQueueExtractMin(queue);
-			}
-			curr = (Vertex*)priorQueueExtractMin(queue);
-			if (curr) {
-				fprintf(out, "%d ", nearest);
-				fprintf(out, "%d\n", curr->number);
-				curr->viewed = VIEWED;
-				spannedVertices++;
-			}
+		if (currVert->nearest != NO_NEAREST) {
+			fprintf(out, "%d %d\n", currVert->number, currVert->nearest);
+			spannedVertices++;
 		}
 	}
 
-	priorQueueDestroy(queue);
+	priorQueueDestroy(priorQueue);
 	return spannedVertices;
 }
