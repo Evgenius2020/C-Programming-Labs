@@ -3,15 +3,14 @@
 
 /*
  Output format:
- Number of encoded chars (byte 1-256)
- Codes:
- Char - Code length (byte) - Code (n bits)
- Char - Code length (byte) - Code (n bits)
- ...
- Number of fakes
- Fake bits
- Encoded text
- EOF
+	Encoded chars mask (256 bits) 
+	Codes:
+		Code length (byte) - Code (n bits)
+		Code length (byte) - Code (n bits)
+		...
+	Number of fakes (3 bits 0-7)
+	Fake bits
+	Encoded text
 */
 void encode(FILE* in, FILE* out);
 

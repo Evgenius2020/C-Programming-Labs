@@ -20,13 +20,13 @@ void main() {
 	/*int currTest = 1;
 	FILE* copy;
 	while (1){
-		copy = fopen(makeFileName(currTest), "r");
+		copy = fopen(makeFileName(currTest), "rb");
 		if (!copy) {
 			break;
 		}
 		currTest++;
 	}
-	copy = fopen(makeFileName(currTest), "w");
+	copy = fopen(makeFileName(currTest), "wb");
 	short curr;
 	while(1) {
 		curr = fgetc(in);

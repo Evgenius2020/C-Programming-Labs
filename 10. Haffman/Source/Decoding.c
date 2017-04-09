@@ -27,30 +27,32 @@ void destroyTree(DecodeNode* tree) {
 }
 
 /* Reading code of tree from the file, generates coding tree */
-DecodeNode* generateTree(BiteReader* reader, unsigned char encodedChars) {
+DecodeNode* generateTree(BiteReader* reader, char* mask) {
 	DecodeNode* root = createDecodeNode();
 	DecodeNode* buf;
-	unsigned char chr, codeLength, bite;
-	while(encodedChars--) {
-		buf = root;
-		chr = biteReaderDequeue(reader, 8);
-		codeLength = biteReaderDequeue(reader, 8);
-		while (codeLength--) {
-			bite = biteReaderDequeue(reader, 1);
-			if (bite) {
-				if (!buf->right) {
-					buf->right = createDecodeNode();
+	unsigned char codeLength, bite;
+	short i;
+	for (i = 0; i < 256; i++) {
+		if (mask[i]) {
+			buf = root;
+			codeLength = biteReaderDequeue(reader, 8); /* Code length*/
+			while (codeLength--) { /* Code */
+				bite = biteReaderDequeue(reader, 1);
+				if (bite) {
+					if (!buf->right) {
+						buf->right = createDecodeNode();
+					}
+					buf = buf->right;
 				}
-				buf = buf->right;
-			}
-			else {
-				if (!buf->left) {
-					buf->left = createDecodeNode();
+				else {
+					if (!buf->left) {
+						buf->left = createDecodeNode();
+					}
+					buf = buf->left;
 				}
-				buf = buf->left;
 			}
+			buf->chr = i;
 		}
-		buf->chr = chr;
 	}
 
 	return root;
@@ -58,7 +60,7 @@ DecodeNode* generateTree(BiteReader* reader, unsigned char encodedChars) {
 
 void regainText(BiteReader* reader, DecodeNode* root, FILE* out) {
 	DecodeNode* buf = root;
-	char bite;
+	unsigned char bite;
 
 	while (1) {
 		bite = biteReaderDequeue(reader, 1);
@@ -78,14 +80,25 @@ void regainText(BiteReader* reader, DecodeNode* root, FILE* out) {
 	}
 }
 
+char* readMask(BiteReader* reader) {
+	char* mask = calloc(256, sizeof(char));
+	short i;
+	for (i = 0; i < 256; i++) {
+		mask[i] = biteReaderDequeue(reader, 1);
+	}
+
+	return mask;
+}
+
 void decode(FILE* in, FILE* out) {
 	BiteReader* reader = biteReaderCreate(in);
 
-	unsigned char encodedChars = biteReaderDequeue(reader, 8); /* Alphabet size */
-	DecodeNode* root = generateTree(reader, encodedChars); /* Coding tree */
+	char* mask = readMask(reader); /* Encoded chars mask */
+	DecodeNode* root = generateTree(reader, mask); /* Coding tree */
 	biteReaderDequeue(reader, biteReaderDequeue(reader, 3)); /* Skips fakes.*/
 	regainText(reader, root, out); /* Encoded text */
 
+	free(mask);
 	biteReaderDestroy(reader);
 	destroyTree(root);
 }

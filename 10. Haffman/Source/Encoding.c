@@ -92,7 +92,6 @@ void serializeCodes(char** codes, BiteWriter* writer) {
 	short i, j;
 	for (i = 0; i < 256; i++) {
 		if (codes[i]) {
-			biteWriterEnqueue(writer, 8, i);
 			biteWriterEnqueue(writer, 8, strlen(codes[i]));
 			for (j = 0; j < strlen(codes[i]); j++) {
 				biteWriterEnqueue(writer, 1, codes[i][j]); // TODO: NO WAY MAN!
@@ -101,25 +100,35 @@ void serializeCodes(char** codes, BiteWriter* writer) {
 	}
 }
 
-void oneCharAlphabetCase(FILE* in, FILE* out, char chr, int freq) {
+void oneCharAlphabetCase(FILE* in, FILE* out, unsigned char chr, int textLength) {
 	BiteWriter* writer = biteWriterCreate(out);
-	biteWriterEnqueue(writer, 8, 1); /* AlphabetSize*/
-	biteWriterEnqueue(writer, 8, chr); /* Char*/
+	short i;
+
+	for (i = 0; i < 256; i++) {
+		biteWriterEnqueue(writer, 1, (i == chr) ? 1 : 0); /* Encoded chars mask */
+	}
 	biteWriterEnqueue(writer, 8, 1); /* Code length*/
 	biteWriterEnqueue(writer, 1, 1); /* Code*/
-	char codeLength = (8 + 8 + 8 + 1 + 3 + freq) % 8;
+	char codeLength = (256 + 8 + 1 + 3 + textLength) % 8;
 	biteWriterEnqueue(writer, 3, (8 - codeLength) % 8); /* Number of fakes*/
 	biteWriterEnqueue(writer, (8 - codeLength) % 8, 0); /* Fakes*/
-	while(freq--) {
-		biteWriterEnqueue(writer, 1, 1); // TODO: TO SLOW!
+	while(textLength--) {
+		biteWriterEnqueue(writer, 1, 1); /* Encoded text */
+	}
+}
+
+void printMask(int* freq, BiteWriter* writer) {
+	int i;
+	for (i = 0; i < 256; i++) {
+		biteWriterEnqueue(writer, 1, freq[i] ? 1 : 0);
 	}
 }
 
 void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq, char alphabetSize) {
 	BiteWriter* writer = biteWriterCreate(out);
-	biteWriterEnqueue(writer, 8, alphabetSize); /* Alphabet size */
+	printMask(freq, writer); /* Encoded chars mask */
 	char** codes = generateCodes(freq);
-	serializeCodes(codes, writer); /* Serialized codes */
+	serializeCodes(codes, writer); /* Codes */
 	short freeBites = writer->bitesN;
 	short i;
 	for (i = 0; i < 256; i++) {
@@ -141,8 +150,8 @@ void encode(FILE* in, FILE* out) {
 	int fileStart = ftell(in);
 	unsigned char alphabetSize = 0; /* Number of unique chars in the text */
 	int* freq = calloc(256, sizeof(int));
-
 	short chr; /* EOF-handling */
+
 	while ((chr = fgetc(in)) != EOF) {
 		if (!freq[chr]) {
 			alphabetSize++;
@@ -151,10 +160,9 @@ void encode(FILE* in, FILE* out) {
 	}
 	fseek(in, fileStart, SEEK_SET);
 
-	short i;
 	if (alphabetSize == 1) {
-		for (i = 0; i < 256, !freq[i]; i++);
-		oneCharAlphabetCase(in, out, i, freq[i]);
+		for (chr = 0; chr < 256, !freq[chr]; chr++);
+		oneCharAlphabetCase(in, out, chr, freq[chr]);
 	}
 	if (alphabetSize > 1) {
 		manyCharsAlphabetCase(in, out , freq, alphabetSize);
