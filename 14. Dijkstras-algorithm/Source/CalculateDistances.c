@@ -4,30 +4,30 @@
 #include "CalculateDistances.h"
 
 void calculateDistances(Vertex* vertices, short verticesN, short start) {
-	short currVert = start;
+	PriorQueue* priorQueue = priorQueueCreate(verticesN);
+	Vertex* currVert;
+	short i;
 	Edge* buf;
-	vertices[currVert - 1].distance = 0;
 
-	PriorQueue* queue = priorQueueCreate(verticesN);
-	do {
-		vertices[currVert - 1].viewed = VIEWED;
-		/* Searching all edges proceeding from 'currVert', rewriting 'length' value if it's longer. */
-		for (buf = vertices[currVert - 1].edges; buf != NULL; buf = buf->next) {
-			if ((vertices[buf->to - 1].distance == UNITIALIZED) ||
-				(vertices[buf->to - 1].distance > vertices[currVert - 1].distance + buf->length)) {
-				vertices[buf->to - 1].distance = vertices[currVert - 1].distance + buf->length;
-				priorQueueInsert(queue, buf, vertices[buf->to - 1].distance);
+	vertices[start - 1].distance = 0;
+	vertices[start - 1].parent = &vertices[start - 1];
+	for (i = 0; i < verticesN; i++) {
+		priorQueueInsert(priorQueue, &vertices[i], vertices[i].distance, &vertices[i].index);
+	}
+	while (priorQueue->length) {
+		currVert = (Vertex*)priorQueueExtractMin(priorQueue);
+		currVert->viewed = VIEWED;
+		for (buf = currVert->edges; buf; buf = buf->next) {
+			if (vertices[buf->to - 1].viewed == VIEWED) {
+				continue;
+			}
+			if (vertices[buf->to - 1].distance >= currVert->distance + buf->length) {
+				vertices[buf->to - 1].distance = currVert->distance + buf->length;
+				priorQueueUpdateKey(priorQueue, vertices[buf->to - 1].index, vertices[buf -> to - 1].distance);
+				vertices[buf->to - 1].parent = currVert;
 			}
 		}
-		/* Selecting nearest edge. */
-		currVert = UNITIALIZED;
-		while (queue->length != 0) {
-			buf = (Edge*)priorQueueExtractMin(queue);
-			if (vertices[buf->to - 1].viewed == UNVIEWED) {
-				currVert = buf->to;
-				break;
-			}
-		}
-	} while (currVert != UNITIALIZED);
-	priorQueueDestroy(queue);
+	}
+
+	priorQueueDestroy(priorQueue);
 }

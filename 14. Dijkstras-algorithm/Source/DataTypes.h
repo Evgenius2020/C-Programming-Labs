@@ -1,9 +1,10 @@
 #ifndef DATA_TYPES
 #define DATA_TYPES
 
+#include "PriorityQueue.h"
+#define INF ULONG_MAX
 #define UNVIEWED 0
 #define VIEWED 1
-#define UNITIALIZED -1
 
 typedef struct Edge {
 	short to;
@@ -12,6 +13,9 @@ typedef struct Edge {
 } Edge;
 
 typedef struct Vertex {
+	t_index index;
+	short number;
+	struct Vertex* parent;
 	char viewed;
 	long long distance;
 	Edge* edges;

@@ -31,11 +31,14 @@ InitializationResult initialize(FILE* in) {
 	verticies = (Vertex*)malloc(sizeof(Vertex) * verticiesN);
 	for (i = 0; i < verticiesN; i++) {
 		verticies[i].viewed = UNVIEWED;
-		verticies[i].distance = UNITIALIZED;
+		verticies[i].distance = INF;
 		verticies[i].edges = NULL;
+		verticies[i].parent = NULL;
+		verticies[i].index = i;
+		verticies[i].number = i + 1;
 	}
 
-	fscanf(in, "%d %d ", &start, &end);
+	fscanf(in, "%hi %hi ", &start, &end);
 	if ((!isBetween(0, start, verticiesN)) ||
 		(!isBetween(0, end, verticiesN))) {
 		result.statusCode = INIT_BAD_VERTEX;
