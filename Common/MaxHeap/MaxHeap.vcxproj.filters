@@ -15,15 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\PriorityQueue.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\main.c">
+    <ClCompile Include="Source\MaxHeap.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\PriorityQueue.h">
+    <ClInclude Include="Source\MaxHeap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
