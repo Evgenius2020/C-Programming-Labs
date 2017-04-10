@@ -21,7 +21,7 @@ void oneCharAlphabetCase(FILE* in, FILE* out, unsigned char chr, int textLength)
 
 	biteWriterEnqueue(writer, 8, 1); /* Alphabet size */
 	biteWriterEnqueue(writer, 1, 1); /* Coding tree */
-	biteWriterEnqueue(writer, 8, chr);  
+	biteWriterEnqueue(writer, 8, chr);
 	char codeLength = (8 + 1 + 8 + 3 + textLength) % 8;
 	biteWriterEnqueue(writer, 3, (8 - codeLength) % 8); /* Number of fakes*/
 	biteWriterEnqueue(writer, (8 - codeLength) % 8, 0); /* Fakes*/

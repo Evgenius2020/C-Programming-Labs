@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "BiteWriter.h"
+#include "BiteReader.h"
 #include "CodingTree.h"
 #include "PriorityQueue.h"
 
@@ -57,7 +58,7 @@ Node* buildCodingTree(int* freq) {
 void searchCodes(Node* root, char** codes, char* currCode, short currPos) {
 	if (!(root->left) && !(root->right)) {
 		currCode[currPos] = '\0';
-		codes[root->name] = malloc(sizeof(char) * strlen(currCode));
+		codes[root->name] = malloc(sizeof(char) * (strlen(currCode) + 1));
 		strcpy(codes[root->name], currCode);
 		return;
 	}
@@ -85,4 +86,24 @@ void serializeCodingTree(BiteWriter* writer, Node* root) {
 	biteWriterEnqueue(writer, 1, 0);
 	serializeCodingTree(writer, root->left);
 	serializeCodingTree(writer, root->right);
+}
+
+/* Builds coding tree by commands */
+void readNode(BiteReader* reader, Node* root) {
+	if (biteReaderDequeue(reader, 1)) {
+		root->name = biteReaderDequeue(reader, 8);
+		return root;
+	}
+
+	root->left = createNode(NO_NAME);
+	readNode(reader, root->left);
+
+	root->right = createNode(NO_NAME);
+	readNode(reader, root->right);
+}
+
+Node* deserializeCodingTree(BiteReader* reader) {
+	Node* root = createNode(NO_NAME);
+	readNode(reader, root);
+	return root;
 }

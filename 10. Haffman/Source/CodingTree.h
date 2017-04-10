@@ -2,6 +2,7 @@
 #define CODING_TREE
 
 #include "BiteWriter.h"
+#include "BiteReader.h"
 
 typedef struct Node {
 	struct Node* left;
@@ -18,5 +19,7 @@ Node* buildCodingTree(int* freq);
 char** generateCodes(Node* root);
 
 void serializeCodingTree(BiteWriter* writer, Node* root);
+
+Node* deserializeCodingTree(BiteReader* reader);
 
 #endif
