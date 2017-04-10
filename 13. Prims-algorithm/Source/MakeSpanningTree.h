@@ -1,0 +1,1 @@
+short makeSpanningTree(Vertex * vertices, short verticesN, FILE * out);
