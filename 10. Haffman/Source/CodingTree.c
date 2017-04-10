@@ -92,7 +92,10 @@ void serializeCodingTree(BiteWriter* writer, Node* root) {
 void readNode(BiteReader* reader, Node* root) {
 	if (biteReaderDequeue(reader, 1)) {
 		root->name = biteReaderDequeue(reader, 8);
-		return root;
+		return;
+	}
+	if (reader->eofFlag) {
+		return;
 	}
 
 	root->left = createNode(NO_NAME);

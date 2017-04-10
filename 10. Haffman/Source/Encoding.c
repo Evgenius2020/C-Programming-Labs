@@ -18,11 +18,9 @@ void encodeText(FILE* in, BiteWriter* writer, char** codes) {
 void oneCharAlphabetCase(FILE* in, FILE* out, unsigned char chr, int textLength) {
 	BiteWriter* writer = biteWriterCreate(out);
 	short i;
-
-	biteWriterEnqueue(writer, 8, 1); /* Alphabet size */
 	biteWriterEnqueue(writer, 1, 1); /* Coding tree */
 	biteWriterEnqueue(writer, 8, chr);
-	char codeLength = (8 + 1 + 8 + 3 + textLength) % 8;
+	char codeLength = (1 + 8 + 3 + textLength) % 8;
 	biteWriterEnqueue(writer, 3, (8 - codeLength) % 8); /* Number of fakes*/
 	biteWriterEnqueue(writer, (8 - codeLength) % 8, 0); /* Fakes*/
 	while (textLength--) {
@@ -30,9 +28,8 @@ void oneCharAlphabetCase(FILE* in, FILE* out, unsigned char chr, int textLength)
 	}
 }
 
-void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq, char alphabetSize) {
+void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq) {
 	BiteWriter* writer = biteWriterCreate(out);
-	biteWriterEnqueue(writer, 8, alphabetSize); /* Alphabet size */
 	Node* codingTreeRoot = buildCodingTree(freq);
 	char** codes = generateCodes(codingTreeRoot);
 	serializeCodingTree(writer, codingTreeRoot); /* Coding tree build comands */
@@ -59,7 +56,7 @@ void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq, char alphabetSize) {
 
 void encode(FILE* in, FILE* out) {
 	int fileStart = ftell(in);
-	unsigned char alphabetSize = 0; /* Number of unique chars in the text */
+	short alphabetSize = 0; /* Number of unique chars in the text */
 	int* freq = calloc(256, sizeof(int));
 	short chr; /* EOF-handling */
 

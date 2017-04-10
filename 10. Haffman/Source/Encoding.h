@@ -3,7 +3,6 @@
 
 /*
  Output format:
-	Alphabet size (byte) 
 	Coding tree build commands:
 		'0' - go to left node
 		  or

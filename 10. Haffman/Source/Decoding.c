@@ -29,12 +29,10 @@ void regainText(BiteReader* reader, Node* root, FILE* out) {
 void decode(FILE* in, FILE* out) {
 	BiteReader* reader = biteReaderCreate(in);
 
-	char alphabetSize = biteReaderDequeue(reader, 8); /* Alphabet size */
-	if (reader->eofFlag) { /* Empty text */
-		biteReaderDestroy(reader);
+	Node* codingTreeRoot = deserializeCodingTree(reader); /* Coding tree */
+	if (reader->eofFlag) { /* 'EOF' on tree deserialization (empty text) */
 		return;
 	}
-	Node* codingTreeRoot = deserializeCodingTree(reader); /* Coding tree */
 	biteReaderDequeue(reader, biteReaderDequeue(reader, 3)); /* Skips fakes.*/
 	regainText(reader, codingTreeRoot, out); /* Encoded text */
 
