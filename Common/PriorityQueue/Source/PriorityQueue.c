@@ -92,7 +92,9 @@ void* priorQueueExtractMin(PriorQueue* priorQueue) {
 	void* minValue = priorQueue->elements[0].value;
 	priorQueue->length--;
 	priorQueue->elements[0] = priorQueue->elements[priorQueue->length];
-	*priorQueue->elements[0].index = 0;
+	if (priorQueue->elements[0].index) {
+		*priorQueue->elements[0].index = 0;
+	}
 	heapify(priorQueue, 1);
 
 	return minValue;

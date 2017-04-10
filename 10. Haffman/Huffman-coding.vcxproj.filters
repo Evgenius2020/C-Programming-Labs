@@ -30,6 +30,9 @@
     <ClCompile Include="Source\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\CodingTree.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\BiteReader.h">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Encoding.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CodingTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

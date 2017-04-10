@@ -1,6 +1,8 @@
 #ifndef BITE_WRITER
 #define BITE_WRITER
 
+#include <stdio.h>
+
  /*Container for bites. On 8 bites collected, prints them to file (as byte).*/
 typedef struct BiteWriter {
 	unsigned short byte;

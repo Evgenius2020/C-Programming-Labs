@@ -3,11 +3,11 @@
 
 /*
  Output format:
-	Encoded chars mask (256 bits) 
-	Codes:
-		Code length (byte) - Code (n bits)
-		Code length (byte) - Code (n bits)
-		...
+	Alphabet size (byte) 
+	Coding tree build commands:
+		'0' - go to left node
+		  or
+		'1' + char - name node by 'char'
 	Number of fakes (3 bits 0-7)
 	Fake bits
 	Encoded text

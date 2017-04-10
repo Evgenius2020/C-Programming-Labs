@@ -18,14 +18,6 @@ DecodeNode* createDecodeNode() {
 	return node;
 }
 
-void destroyTree(DecodeNode* tree) {
-	if (tree) {
-		free(tree->left);
-		free(tree->right);
-		free(tree);
-	}
-}
-
 /* Reading code of tree from the file, generates coding tree */
 DecodeNode* generateTree(BiteReader* reader, char* mask) {
 	DecodeNode* root = createDecodeNode();
@@ -100,5 +92,4 @@ void decode(FILE* in, FILE* out) {
 
 	free(mask);
 	biteReaderDestroy(reader);
-	destroyTree(root);
 }
