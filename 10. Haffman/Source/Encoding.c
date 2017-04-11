@@ -32,10 +32,11 @@ void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq) {
 	BiteWriter* writer = biteWriterCreate(out);
 	Node* codingTreeRoot = buildCodingTree(freq);
 	char** codes = generateCodes(codingTreeRoot);
-	serializeCodingTree(writer, codingTreeRoot); /* Coding tree build comands */
+	serializeCodingTree(writer, codingTreeRoot); /* Coding tree build commands */
 	short freeBites = writer->bitesN;
 	short i;
 	for (i = 0; i < 256; i++) {
+		/* printf("%s\n", codes[i]); */
 		if (freq[i]) {
 			freeBites += strlen(codes[i]) * freq[i];
 			freeBites %= 8;

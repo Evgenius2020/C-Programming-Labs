@@ -58,13 +58,12 @@ t_index heapify(PriorQueue* priorQueue, t_index index) {
 }
 
 t_index priorQueueInsert(PriorQueue* priorQueue, void* value, t_key key, t_index* indexPtr) {
-	t_index i = priorQueue->length++;
-
-	priorQueue->elements[i].key = key;
-	priorQueue->elements[i].value = value;
-	priorQueue->elements[i].index = indexPtr;
-	while ((i > 0) && (priorQueue->elements[i / 2].key > priorQueue->elements[i].key)) {
-		swapElements(priorQueue, i, i / 2);
+	t_index i = ++priorQueue->length;
+	priorQueue->elements[i - 1].key = key;
+	priorQueue->elements[i - 1].value = value;
+	priorQueue->elements[i - 1].index = indexPtr;
+	while ((i > 1) && (priorQueue->elements[i / 2 - 1].key > priorQueue->elements[i - 1].key)) {
+		swapElements(priorQueue, i - 1, i / 2 - 1);
 		i /= 2;
 	}
 
@@ -76,8 +75,8 @@ t_index priorQueueUpdateKey(PriorQueue* priorQueue, t_index index, t_key key) {
 		return index;
 	}
 	priorQueue->elements[index].key = key;
-	while ((index > 0) && (priorQueue->elements[index / 2].key > priorQueue->elements[index].key)) {
-		swapElements(priorQueue, index, index / 2);
+	while ((index > 1) && (priorQueue->elements[index / 2 - 1].key > priorQueue->elements[index - 1].key)) {
+		swapElements(priorQueue, index - 1, index / 2 - 1);
 		index /= 2;
 	}
 

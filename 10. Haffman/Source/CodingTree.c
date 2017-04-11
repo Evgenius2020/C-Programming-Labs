@@ -35,7 +35,7 @@ Node* buildCodingTree(int* freq) {
 	}
 
 	Node *newNode, *left, *right;
-	short newKey;
+	int newKey;
 	while (1) {
 		newKey = priorQueueGetMinKey(priorQueue);
 		left = priorQueueExtractMin(priorQueue);
