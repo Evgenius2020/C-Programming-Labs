@@ -41,6 +41,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MaxHeap", "Common\MaxHeap\M
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "12. Kruskals-algorithm", "12. Kruskals-algorithm\Kruskals-algorithm.vcxproj", "{F007D3D2-A22E-4394-B724-1E9C8A421150}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03. Rabin-Karp-algorithm", "03. Rabin-Karp-algorithm\03. Rabin-Karp-algorithm.vcxproj", "{7A644969-936A-4A3F-99C7-BA441D6010EC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "02. Boyer–Moore-algorithm", "02. Boyer–Moore-algorithm\Boyer–Moore-algorithm.vcxproj", "{FB6F1434-EB95-4CD1-AC12-81B88701B0AA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RingBuffer", "Common\RingBuffer\RingBuffer.vcxproj", "{42F041B0-D421-4024-8109-831EEDA2E00A}"
+>>>>>>> 3.Rabin-Karp-algorithm
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -129,6 +136,7 @@ Global
 		{DEC02D6C-CFD7-4496-92F2-061B3F4E23D9}.Release|x64.Build.0 = Release|x64
 		{DEC02D6C-CFD7-4496-92F2-061B3F4E23D9}.Release|x86.ActiveCfg = Release|Win32
 		{DEC02D6C-CFD7-4496-92F2-061B3F4E23D9}.Release|x86.Build.0 = Release|Win32
+<<<<<<< HEAD
 		{227DD61C-6DEB-42A9-A508-8B90E28D7350}.Debug|x64.ActiveCfg = Debug|x64
 		{227DD61C-6DEB-42A9-A508-8B90E28D7350}.Debug|x64.Build.0 = Debug|x64
 		{227DD61C-6DEB-42A9-A508-8B90E28D7350}.Debug|x86.ActiveCfg = Debug|Win32
@@ -185,6 +193,32 @@ Global
 		{0CE46603-4307-44F2-9F33-6DC37E6BFB19}.Release|x64.Build.0 = Release|x64
 		{0CE46603-4307-44F2-9F33-6DC37E6BFB19}.Release|x86.ActiveCfg = Release|Win32
 		{0CE46603-4307-44F2-9F33-6DC37E6BFB19}.Release|x86.Build.0 = Release|Win32
+=======
+		{7A644969-936A-4A3F-99C7-BA441D6010EC}.Debug|x64.ActiveCfg = Debug|x64
+		{7A644969-936A-4A3F-99C7-BA441D6010EC}.Debug|x64.Build.0 = Debug|x64
+		{7A644969-936A-4A3F-99C7-BA441D6010EC}.Debug|x86.ActiveCfg = Debug|Win32
+		{7A644969-936A-4A3F-99C7-BA441D6010EC}.Debug|x86.Build.0 = Debug|Win32
+		{7A644969-936A-4A3F-99C7-BA441D6010EC}.Release|x64.ActiveCfg = Release|x64
+		{7A644969-936A-4A3F-99C7-BA441D6010EC}.Release|x64.Build.0 = Release|x64
+		{7A644969-936A-4A3F-99C7-BA441D6010EC}.Release|x86.ActiveCfg = Release|Win32
+		{7A644969-936A-4A3F-99C7-BA441D6010EC}.Release|x86.Build.0 = Release|Win32
+		{FB6F1434-EB95-4CD1-AC12-81B88701B0AA}.Debug|x64.ActiveCfg = Debug|x64
+		{FB6F1434-EB95-4CD1-AC12-81B88701B0AA}.Debug|x64.Build.0 = Debug|x64
+		{FB6F1434-EB95-4CD1-AC12-81B88701B0AA}.Debug|x86.ActiveCfg = Debug|Win32
+		{FB6F1434-EB95-4CD1-AC12-81B88701B0AA}.Debug|x86.Build.0 = Debug|Win32
+		{FB6F1434-EB95-4CD1-AC12-81B88701B0AA}.Release|x64.ActiveCfg = Release|x64
+		{FB6F1434-EB95-4CD1-AC12-81B88701B0AA}.Release|x64.Build.0 = Release|x64
+		{FB6F1434-EB95-4CD1-AC12-81B88701B0AA}.Release|x86.ActiveCfg = Release|Win32
+		{FB6F1434-EB95-4CD1-AC12-81B88701B0AA}.Release|x86.Build.0 = Release|Win32
+		{42F041B0-D421-4024-8109-831EEDA2E00A}.Debug|x64.ActiveCfg = Debug|x64
+		{42F041B0-D421-4024-8109-831EEDA2E00A}.Debug|x64.Build.0 = Debug|x64
+		{42F041B0-D421-4024-8109-831EEDA2E00A}.Debug|x86.ActiveCfg = Debug|Win32
+		{42F041B0-D421-4024-8109-831EEDA2E00A}.Debug|x86.Build.0 = Debug|Win32
+		{42F041B0-D421-4024-8109-831EEDA2E00A}.Release|x64.ActiveCfg = Release|x64
+		{42F041B0-D421-4024-8109-831EEDA2E00A}.Release|x64.Build.0 = Release|x64
+		{42F041B0-D421-4024-8109-831EEDA2E00A}.Release|x86.ActiveCfg = Release|Win32
+		{42F041B0-D421-4024-8109-831EEDA2E00A}.Release|x86.Build.0 = Release|Win32
+>>>>>>> 3.Rabin-Karp-algorithm
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -195,6 +229,10 @@ Global
 		{464F6AEA-B895-424D-B8FA-F645C7C3D1E9} = {40D5C457-C5F1-40E9-B4C5-E9E33C9876BD}
 		{402329F6-0A68-494E-8B35-A27946DFC7EB} = {24B1C850-36E2-4CC4-BAA5-F3CC0CA22BFC}
 		{C807607B-5EF6-4109-8B6C-84BEF70ACB04} = {24B1C850-36E2-4CC4-BAA5-F3CC0CA22BFC}
+<<<<<<< HEAD
 		{846B7947-0645-4589-AE36-61DC1DD67D84} = {24B1C850-36E2-4CC4-BAA5-F3CC0CA22BFC}
+=======
+		{42F041B0-D421-4024-8109-831EEDA2E00A} = {24B1C850-36E2-4CC4-BAA5-F3CC0CA22BFC}
+>>>>>>> 3.Rabin-Karp-algorithm
 	EndGlobalSection
 EndGlobal
