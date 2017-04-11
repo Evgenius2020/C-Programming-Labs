@@ -34,7 +34,7 @@ InitializationResult initialize(FILE* in) {
 		verticies[i].distance = INF;
 		verticies[i].edges = NULL;
 		verticies[i].parent = NULL;
-		verticies[i].index = i;
+		verticies[i].index = i + 1;
 		verticies[i].number = i + 1;
 	}
 

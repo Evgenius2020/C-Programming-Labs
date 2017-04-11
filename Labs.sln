@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11. Topological-sorting", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "14. Dijkstras-algorithm", "14. Dijkstras-algorithm\Dijkstras-algorithm.vcxproj", "{0CE46603-4307-44F2-9F33-6DC37E6BFB19}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10. Huffman-coding", "10. Haffman\Huffman-coding.vcxproj", "{227DD61C-6DEB-42A9-A508-8B90E28D7350}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "13. Prims-algorithm", "13. Prims-algorithm\Prims-algorithm.vcxproj", "{6688CD80-2D97-435D-907E-0FB024304F8F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "05. Heap-sort", "05. Heap-sort\Heap-sort.vcxproj", "{1CE1EF14-094F-4FC3-BAAC-2B2E834FB81B}"
@@ -127,6 +129,14 @@ Global
 		{DEC02D6C-CFD7-4496-92F2-061B3F4E23D9}.Release|x64.Build.0 = Release|x64
 		{DEC02D6C-CFD7-4496-92F2-061B3F4E23D9}.Release|x86.ActiveCfg = Release|Win32
 		{DEC02D6C-CFD7-4496-92F2-061B3F4E23D9}.Release|x86.Build.0 = Release|Win32
+		{227DD61C-6DEB-42A9-A508-8B90E28D7350}.Debug|x64.ActiveCfg = Debug|x64
+		{227DD61C-6DEB-42A9-A508-8B90E28D7350}.Debug|x64.Build.0 = Debug|x64
+		{227DD61C-6DEB-42A9-A508-8B90E28D7350}.Debug|x86.ActiveCfg = Debug|Win32
+		{227DD61C-6DEB-42A9-A508-8B90E28D7350}.Debug|x86.Build.0 = Debug|Win32
+		{227DD61C-6DEB-42A9-A508-8B90E28D7350}.Release|x64.ActiveCfg = Release|x64
+		{227DD61C-6DEB-42A9-A508-8B90E28D7350}.Release|x64.Build.0 = Release|x64
+		{227DD61C-6DEB-42A9-A508-8B90E28D7350}.Release|x86.ActiveCfg = Release|Win32
+		{227DD61C-6DEB-42A9-A508-8B90E28D7350}.Release|x86.Build.0 = Release|Win32
 		{6688CD80-2D97-435D-907E-0FB024304F8F}.Debug|x64.ActiveCfg = Debug|x64
 		{6688CD80-2D97-435D-907E-0FB024304F8F}.Debug|x64.Build.0 = Debug|x64
 		{6688CD80-2D97-435D-907E-0FB024304F8F}.Debug|x86.ActiveCfg = Debug|Win32

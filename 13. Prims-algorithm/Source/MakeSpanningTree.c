@@ -22,7 +22,7 @@ short makeSpanningTree(Vertex* vertices, short verticesN, FILE* out) {
 		currVert->viewed = VIEWED;
 		for (buf = currVert->edges; buf; buf = buf->next) {
 			if ((vertices[buf->to - 1].viewed == UNVIEWED) && (buf->length < priorQueue->elements[vertices[buf->to - 1].queueIndex].key)) {
-				priorQueueUpdateKey(priorQueue, vertices[buf->to - 1].queueIndex, buf->length);
+				priorQueueUpdateKey(priorQueue, vertices[buf->to - 1].queueIndex , buf->length);
 				vertices[buf->to - 1].nearest = currVert->number;
 			}
 		}
