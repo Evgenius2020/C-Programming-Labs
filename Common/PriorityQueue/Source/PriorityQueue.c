@@ -10,7 +10,7 @@ PriorQueue* priorQueueCreate(t_index length) {
 }
 
 void priorQueueDestroy(PriorQueue* priorQueue) {
-	free(priorQueue->elements);
+	//free(priorQueue->elements);
 	free(priorQueue);
 }
 
@@ -24,16 +24,16 @@ char priorQueueIsEmpty(PriorQueue* priorQueue) {
 void swapElements(PriorQueue* priorQueue, t_index el1, t_index el2) {
 	PriorQueueElement buf;
 
-	if (priorQueue->elements[el1].index) {
-		*priorQueue->elements[el1].index = el2;
+	if (priorQueue->elements[el1 - 1].index) {
+		*priorQueue->elements[el1 - 1].index = el2;
 	}
-	if (priorQueue->elements[el2].index) {
-		*priorQueue->elements[el2].index = el1;
+	if (priorQueue->elements[el2 - 1].index) {
+		*priorQueue->elements[el2 - 1].index = el1;
 	}
 
-	buf = priorQueue->elements[el1];
-	priorQueue->elements[el1] = priorQueue->elements[el2];
-	priorQueue->elements[el2] = buf;
+	buf = priorQueue->elements[el1 - 1];
+	priorQueue->elements[el1 - 1] = priorQueue->elements[el2 - 1];
+	priorQueue->elements[el2 - 1] = buf;
 }
 
 t_index heapify(PriorQueue* priorQueue, t_index index) {
@@ -50,7 +50,7 @@ t_index heapify(PriorQueue* priorQueue, t_index index) {
 		smallest = right;
 	}
 	if (smallest != index) {
-		swapElements(priorQueue, index - 1, smallest - 1);
+		swapElements(priorQueue, index, smallest);
 		return heapify(priorQueue, smallest);
 	}
 
@@ -63,7 +63,7 @@ t_index priorQueueInsert(PriorQueue* priorQueue, void* value, t_key key, t_index
 	priorQueue->elements[i - 1].value = value;
 	priorQueue->elements[i - 1].index = indexPtr;
 	while ((i > 1) && (priorQueue->elements[i / 2 - 1].key > priorQueue->elements[i - 1].key)) {
-		swapElements(priorQueue, i - 1, i / 2 - 1);
+		swapElements(priorQueue, i, i / 2);
 		i /= 2;
 	}
 
@@ -71,12 +71,12 @@ t_index priorQueueInsert(PriorQueue* priorQueue, void* value, t_key key, t_index
 }
 
 t_index priorQueueUpdateKey(PriorQueue* priorQueue, t_index index, t_key key) {
-	if ((!priorQueue) || (index >= priorQueue->length)) {
+	if ((!priorQueue) || (index > priorQueue->length)) {
 		return index;
 	}
-	priorQueue->elements[index].key = key;
+	priorQueue->elements[index - 1].key = key;
 	while ((index > 1) && (priorQueue->elements[index / 2 - 1].key > priorQueue->elements[index - 1].key)) {
-		swapElements(priorQueue, index - 1, index / 2 - 1);
+		swapElements(priorQueue, index, index / 2);
 		index /= 2;
 	}
 
@@ -92,7 +92,7 @@ void* priorQueueExtractMin(PriorQueue* priorQueue) {
 	priorQueue->length--;
 	priorQueue->elements[0] = priorQueue->elements[priorQueue->length];
 	if (priorQueue->elements[0].index) {
-		*priorQueue->elements[0].index = 0;
+		*priorQueue->elements[0].index = 1;
 	}
 	heapify(priorQueue, 1);
 

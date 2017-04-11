@@ -26,7 +26,7 @@ InitializationResult initialize(FILE* in) {
 		vertices[i].nearest = NO_NEAREST;
 		vertices[i].edges = NULL;
 		vertices[i].number = i + 1;
-		vertices[i].queueIndex = i;
+		vertices[i].queueIndex = i + 1;
 	}
 
 	fscanf(in, "%d ", &edgesN);
