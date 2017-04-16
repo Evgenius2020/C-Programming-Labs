@@ -6,7 +6,7 @@ typedef struct Row {
 	char name[20];
 	char age;
 	float mark;
-	int group;
+	int groupId;
 } Row;
 
 char nameCmp(Row* left, Row* right) {
@@ -25,41 +25,41 @@ char markCmp(Row* left, Row* right) {
 	NUMCMP(left, right, mark);
 }
 char groupCmp(Row* left, Row* right) {
-	NUMCMP(left, right, group);
+	NUMCMP(left, right, groupId);
 }
 
-void qSortRec(void* mass, size_t elemSize, int l, int r, char *cmp(void*, void*)) {
+void qSortRec(void* base, size_t size, int l, int r, int (*cmp)(const void*, const void*)) {
 	if (l >= r) {
 		return;
 	}
 
 	int i = l;
 	int j = r;
-	memcpy(pivot, (char*)mass + ((l + r) / 2) * elemSize , elemSize);
+	memcpy(pivot, (char*)base + ((l + r) / 2) * size , size);
 	do {
-		while (strcmp((char*)mass + i*elemSize, pivot) < 0) {
+		while (strcmp((char*)base + i*size, pivot) < 0) {
 			i++;
 		}
-		while (strcmp(pivot, (char*)mass + j*elemSize) < 0) {
+		while (strcmp(pivot, (char*)base + j*size) < 0) {
 			j--;
 		}
 		if (i <= j) {
-			memcpy(buf, (char*)mass + i*elemSize, elemSize);
-			memcpy(((char*)mass + i*elemSize), ((char*)mass + j*elemSize), elemSize);
-			memcpy(((char*)mass + j*elemSize), buf, elemSize);
+			memcpy(buf, (char*)base + i*size, size);
+			memcpy(((char*)base + i*size), ((char*)base + j*size), size);
+			memcpy(((char*)base + j*size), buf, size);
 			i++;
 			j--;
 		}
 	} while (i < j);
 
-	qSortRec(mass, elemSize, l, j, cmp);
-	qSortRec(mass, elemSize, i, r, cmp);
+	qSortRec(base, size, l, j, cmp);
+	qSortRec(base, size, i, r, cmp);
 }
 
-void qSort(void* mass, int length, size_t elemSize, char *cmp(void*, void*)) {
-	buf = malloc(elemSize);
-	pivot = malloc(elemSize);
-	qSortRec(mass, elemSize, 0, length - 1, cmp);
+void qSort(void* base, size_t num, size_t size, int(*cmp)(const void*, const void*)) {
+	buf = malloc(size);
+	pivot = malloc(size);
+	qSortRec(base, size, 0, num - 1, cmp);
 	free(pivot);
 	free(buf);
 }
@@ -68,8 +68,8 @@ void main(int argc, char* argv[]) {
 	if (argc < 4) {
 		return;
 	}
-	FILE* in = fopen(argv[1], "r");
-	FILE* out = fopen(argv[2], "w");
+	FILE* in = fopen(argv[2], "r");
+	FILE* out = fopen(argv[3], "w");
 	if (!in || !out) {
 		printf("I/O error\n");
 		return;
@@ -82,19 +82,19 @@ void main(int argc, char* argv[]) {
 		fscanf(in, "%s ", rows[i].name);
 		fscanf(in, "%d ", &rows[i].age);
 		fscanf(in, "%f ", &rows[i].mark);
-		fscanf(in, "%d ", &rows[i].group);
+		fscanf(in, "%d ", &rows[i].groupId);
 	}
 
-	if (!strcmp(argv[3], "-name")) {
+	if (!strcmp(argv[1], "-n")) {
 		qSort(rows, rowsN, sizeof(Row), nameCmp);
 	}
-	if (!strcmp(argv[3], "-age")) {
+	if (!strcmp(argv[1], "-a")) {
 		qSort(rows, rowsN, sizeof(Row), ageCmp);
 	}
-	if (!strcmp(argv[3], "-mark")) {
+	if (!strcmp(argv[1], "-m")) {
 		qSort(rows, rowsN, sizeof(Row), markCmp);
 	}
-	if (!strcmp(argv[3], "-group")) {
+	if (!strcmp(argv[1], "-g")) {
 		qSort(rows, rowsN, sizeof(Row), groupCmp);
 	}
 
@@ -102,7 +102,7 @@ void main(int argc, char* argv[]) {
 		fprintf(out, "%s ", rows[i].name);
 		fprintf(out, "%d ", rows[i].age);
 		fprintf(out, "%f ", rows[i].mark);
-		fprintf(out, "%d ", rows[i].group);
+		fprintf(out, "%d ", rows[i].groupId);
 		fprintf(out, "\n");
 	}
 
