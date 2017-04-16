@@ -145,6 +145,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.c" />
+    <ClCompile Include="Source\qSort.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Comparings.h" />
+    <ClInclude Include="Source\qSort.h" />
+    <ClInclude Include="Source\Row.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
