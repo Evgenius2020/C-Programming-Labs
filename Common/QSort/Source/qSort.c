@@ -4,16 +4,6 @@
 static void* buf;
 static void* pivot;
 
-void qSort(void* base, size_t num, size_t size, int(*cmp)(const void*, const void*)) {
-	buf = malloc(size);
-	pivot = malloc(size);
-
-	qSortRec(base, size, 0, num - 1, cmp);
-
-	free(pivot);
-	free(buf);
-}
-
 void qSortRec(void* base, size_t size, int l, int r, int(*cmp)(const void*, const void*)) {
 	if (l >= r) {
 		return;
@@ -40,4 +30,14 @@ void qSortRec(void* base, size_t size, int l, int r, int(*cmp)(const void*, cons
 
 	qSortRec(base, size, l, j, cmp);
 	qSortRec(base, size, i, r, cmp);
+}
+
+void qSort(void* base, size_t num, size_t size, int(*cmp)(const void*, const void*)) {
+	buf = malloc(size);
+	pivot = malloc(size);
+
+	qSortRec(base, size, 0, num - 1, cmp);
+
+	free(pivot);
+	free(buf);
 }
