@@ -9,7 +9,7 @@ typedef struct Row {
 	int groupId;
 } Row;
 
-char nameCmp(Row* left, Row* right) {
+int nameCmp(Row* left, Row* right) {
 	return strcmp(left->name, right->name);
 }
 
@@ -18,13 +18,13 @@ static void* pivot;
 
 #define NUMCMP(left, right, fieldname) return (left->##fieldname == right->##fieldname) ? 0 : ((left->##fieldname < right->##fieldname) ? -1 : 1)
 
-char ageCmp(Row* left, Row* right) {
+int ageCmp(Row* left, Row* right) {
 	NUMCMP(left, right, age);
 }
-char markCmp(Row* left, Row* right) {
+int markCmp(Row* left, Row* right) {
 	NUMCMP(left, right, mark);
 }
-char groupCmp(Row* left, Row* right) {
+int groupCmp(Row* left, Row* right) {
 	NUMCMP(left, right, groupId);
 }
 
@@ -37,10 +37,10 @@ void qSortRec(void* base, size_t size, int l, int r, int (*cmp)(const void*, con
 	int j = r;
 	memcpy(pivot, (char*)base + ((l + r) / 2) * size , size);
 	do {
-		while (strcmp((char*)base + i*size, pivot) < 0) {
+		while (cmp((char*)base + i*size, pivot) < 0) {
 			i++;
 		}
-		while (strcmp(pivot, (char*)base + j*size) < 0) {
+		while (cmp(pivot, (char*)base + j*size) < 0) {
 			j--;
 		}
 		if (i <= j) {
