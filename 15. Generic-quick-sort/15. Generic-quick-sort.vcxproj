@@ -150,11 +150,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Common\QSort\Source\qSort.c" />
     <ClCompile Include="Source\main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Common\QSort\Source\qSort.h" />
     <ClInclude Include="Source\Comparings.h" />
     <ClInclude Include="Source\Row.h" />
   </ItemGroup>

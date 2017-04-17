@@ -3,6 +3,7 @@
 #include "Initialize.h"
 #include "MakeSpannigTree.h"
 #include "DataTypes.h"
+#include "qSort.h"
 
 int compareEdges(Edge* left, Edge* right) {
 	return left->length - right->length;
@@ -19,7 +20,7 @@ void main() {
 
 	InitializationResult initResult = initialize(in);
 	if (initResult.statusCode == INIT_SUCCESS) {
-		qsort(initResult.edges, initResult.edgesN, sizeof(Edge), compareEdges);
+		qSort(initResult.edges, initResult.edgesN, sizeof(Edge), compareEdges);
 		spannedvertices = makeSpanningTree(initResult, out);
 		if (spannedvertices != initResult.verticesN) {
 			rewind(out);
