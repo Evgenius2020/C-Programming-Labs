@@ -63,6 +63,10 @@ void main(int argc, char* argv[]) {
 	vector->values = malloc(sizeof(char) * boardSize);
 	vector->length = 0;
 	FILE* out = fopen(argv[2], "w");
+	if (!out) {
+		printf("bad filename\n");
+		return;
+	}
 
 	solQueen(vector, out, boardSize);
 	fclose(out);
