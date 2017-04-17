@@ -1,10 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define BOARD_SIZE 8
-
 typedef struct Vector {
-	unsigned char values[BOARD_SIZE];
+	unsigned char* values;
 	unsigned char length;
 }Vector;
 
@@ -25,40 +23,48 @@ char checkVector(unsigned char newPos, Vector* vector) {
 	return 1;
 }
 
-void printBoard(Vector* vector) {
+void printBoard(Vector* vector, FILE* out, unsigned char boardSize) {
 	unsigned char i, j;
-	for (i = 0; i < BOARD_SIZE; i++) {
-		for (j = 0; j < BOARD_SIZE; j++) {
+	for (i = 0; i < boardSize; i++) {
+		for (j = 0; j < boardSize; j++) {
 			if (vector->values[i] == j) {
-				printf("1 ");
+				fprintf(out, "1 ");
 			}
 			else {
-				printf("0 ");
+				fprintf(out, "0 ");
 			}
 		}
-		printf("\n");
+		fprintf(out, "\n");
 	}
-	printf("==========\n");
+	fprintf(out, "==========\n");
 }
 
-void solQueen(Vector* vector) {
-	if (vector->length == BOARD_SIZE) {
-		printBoard(vector);
+void solQueen(Vector* vector, FILE* out, unsigned char boardSize) {
+	if (vector->length == boardSize) {
+		printBoard(vector, out, boardSize);
 	}
 
 	unsigned char newPos;
-	for (newPos = 0; newPos < BOARD_SIZE; newPos++) {
+	for (newPos = 0; newPos < boardSize; newPos++) {
 		if (checkVector(newPos, vector)) {
 			vector->values[vector->length++] = newPos;
-			solQueen(vector);
+			solQueen(vector, out, boardSize);
 			vector->length--;
 		}
 	}
 }
 
-void main() {
+void main(int argc, char* argv[]) {
+	if (argc < 3) {
+		return;
+	}
 	Vector* vector = malloc(sizeof(Vector));
+	unsigned char boardSize = atoi(argv[1]);
+	vector->values = malloc(sizeof(char) * boardSize);
 	vector->length = 0;
+	FILE* out = fopen(argv[2], "w");
 
-	solQueen(vector);
+	solQueen(vector, out, boardSize);
+	fclose(out);
+	free(vector);
 }
