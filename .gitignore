@@ -3,6 +3,7 @@
 [Bb]uild/
 [Dd]ebug/
 [Rr]elease/
+x64/
 *.opendb
 *.tlog/
 .vs/
