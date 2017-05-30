@@ -19,7 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Initialize.c" />
     <ClCompile Include="Source\main.c" />
+    <ClCompile Include="Source\TopologicalSorting.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\DataTypes.h" />
+    <ClInclude Include="Source\Initialize.h" />
+    <ClInclude Include="Source\TopologicalSorting.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DEC02D6C-CFD7-4496-92F2-061B3F4E23D9}</ProjectGuid>
