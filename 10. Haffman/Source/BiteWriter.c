@@ -7,6 +7,8 @@ BiteWriter* biteWriterCreate(FILE* outputFile) {
 	writer->bitesN = 0;
 	writer->byte = 0;
 	writer->file = outputFile;
+
+	return writer;
 }
 
 void biteWriterDestroy(BiteWriter* writer) {

@@ -36,7 +36,7 @@ unsigned short biteReaderDequeue(BiteReader* reader, unsigned char bitesN) {
 		}
 	}
 
-	result = reader->bites >> (reader->bitesN - bitesN); /*1100110 0|1101100 , 11 001001|01*/
+	result = reader->bites >> (reader->bitesN - bitesN);
 	reader->bitesN -= bitesN;
 	reader->bites = reader->bites & masks[reader->bitesN - 1]; /*Keep last 'bitesN' bites;*/
 

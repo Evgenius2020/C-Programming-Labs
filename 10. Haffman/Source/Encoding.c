@@ -10,14 +10,13 @@ void encodeText(FILE* in, BiteWriter* writer, char** codes) {
 	short chr, i;
 	while ((chr = fgetc(in)) != EOF) {
 		for (i = 0; i < strlen(codes[chr]); i++) {
-			biteWriterEnqueue(writer, 1, codes[chr][i]); // TODO: whole code must be inserted into queue
+			biteWriterEnqueue(writer, 1, codes[chr][i]);
 		}
 	}
 }
 
 void oneCharAlphabetCase(FILE* in, FILE* out, unsigned char chr, int textLength) {
 	BiteWriter* writer = biteWriterCreate(out);
-	short i;
 	biteWriterEnqueue(writer, 1, 1); /* Coding tree */
 	biteWriterEnqueue(writer, 8, chr);
 	char codeLength = (1 + 8 + 3 + textLength) % 8;
@@ -36,7 +35,9 @@ void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq) {
 	short freeBites = writer->bitesN;
 	short i;
 	for (i = 0; i < 256; i++) {
+        /* Uncomment to show all codes of symbols: */
 		/* printf("%s\n", codes[i]); */
+		
 		if (freq[i]) {
 			freeBites += strlen(codes[i]) * freq[i];
 			freeBites %= 8;
@@ -74,7 +75,7 @@ void encode(FILE* in, FILE* out) {
 		oneCharAlphabetCase(in, out, chr, freq[chr]);
 	}
 	if (alphabetSize > 1) {
-		manyCharsAlphabetCase(in, out, freq, alphabetSize);
+		manyCharsAlphabetCase(in, out, freq);
 	}
 
 	free(freq);
