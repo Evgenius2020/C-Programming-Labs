@@ -20,15 +20,12 @@ typedef struct Vertex {
 #define INIT_BAD_LINES_NUMBER 2
 #define INIT_BAD_VERTEX 3
 #define INIT_BAD_VERTEX_NUMBER 4
-#define INIT_BAD_EDGES_NUMBER 5
-
-#define maxVertices 1000
-#define maxEdges(n) n*(n-1)/2
+#define INIT_BAD_EDGES_NUMBER 5	
 
 typedef struct InitializationResult {
 	char statusCode;
-	Vertex* verticies;
-	int verticiesN;
+	Vertex* vertices;
+	int verticesN;
 }InitializationResult;
 
 #endif

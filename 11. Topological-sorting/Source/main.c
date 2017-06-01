@@ -8,14 +8,14 @@
 void dispose(InitializationResult* initResult) {
 	int i;
 	Edge* buf;
-	for (i = 0; i < initResult->verticiesN; i++) {
-		while (initResult->verticies[i].edges) {
-			buf = initResult->verticies[i].edges->next;
-			free(initResult->verticies[i].edges);
-			initResult->verticies[i].edges = buf;
+	for (i = 0; i < initResult->verticesN; i++) {
+		while (initResult->vertices[i].edges) {
+			buf = initResult->vertices[i].edges->next;
+			free(initResult->vertices[i].edges);
+			initResult->vertices[i].edges = buf;
 		}
 	}
-	free(initResult->verticies);
+	free(initResult->vertices);
 	free(initResult);
 }
 
@@ -43,7 +43,7 @@ void main() {
 
 	InitializationResult* initResult = initialize(in);
 	if (initResult->statusCode == INIT_SUCCESS) {
-		Stack* sortedVerticies = topologicalSorting(initResult->verticies, initResult->verticiesN);
+		Stack* sortedVerticies = topologicalSorting(initResult->vertices, initResult->verticesN);
 		if (sortedVerticies) {
 			while (!stackIsEmpty(sortedVerticies)) {
 				fprintf(out, "%d ", stackPop(sortedVerticies));
