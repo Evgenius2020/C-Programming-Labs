@@ -1,7 +1,7 @@
 Searcher of possible positions of queens on chess board using backtracking algorithm.
 
 # command line:
-* 16. Backtracking.exe
+* Backtracking.exe - name of .exe file
 * S - number of rows
 * filename - name of output file
 
@@ -10,13 +10,13 @@ Searcher of possible positions of queens on chess board using backtracking algor
 
 # Examples
 ## command line:
-    16. Backtracking.exe 3 out.txt
+    Backtracking.exe 3 out.txt
 
 ## out.txt
-    
+    (empty file)
 
 ## command line:
-    16. Backtracking.exe 4  out.txt
+    Backtracking.exe 4  out.txt
 
 ## out.txt
     0 1 0 0 
