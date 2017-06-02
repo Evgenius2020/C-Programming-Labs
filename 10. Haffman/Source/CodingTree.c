@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
-#include "BiteWriter.h"
-#include "BiteReader.h"
+#include "BitWriter.h"
+#include "BitReader.h"
 #include "CodingTree.h"
 #include "PriorityQueue.h"
 
@@ -77,36 +77,36 @@ char** generateCodes(Node* root) {
 	return codes;
 }
 
-void serializeCodingTree(BiteWriter* writer, Node* root) {
+void serializeCodingTree(BitWriter* bitWriter, Node* root) {
 	if (!(root->left) && !(root->right)) {
-		biteWriterEnqueue(writer, 1, 1);
-		biteWriterEnqueue(writer, 8, root->name);
+		bitWriterEnqueue(bitWriter, 1, 1);
+		bitWriterEnqueue(bitWriter, 8, root->name);
 		return;
 	}
-	biteWriterEnqueue(writer, 1, 0);
-	serializeCodingTree(writer, root->left);
-	serializeCodingTree(writer, root->right);
+	bitWriterEnqueue(bitWriter, 1, 0);
+	serializeCodingTree(bitWriter, root->left);
+	serializeCodingTree(bitWriter, root->right);
 }
 
 /* Builds coding tree by commands */
-void readNode(BiteReader* reader, Node* root) {
-	if (biteReaderDequeue(reader, 1)) {
-		root->name = biteReaderDequeue(reader, 8);
+void readNode(BitReader* bitReader, Node* root) {
+	if (bitReaderDequeue(bitReader, 1)) {
+		root->name = bitReaderDequeue(bitReader, 8);
 		return;
 	}
-	if (reader->eofFlag) {
+	if (bitReader->eofFlag) {
 		return;
 	}
 
 	root->left = createNode(NO_NAME);
-	readNode(reader, root->left);
+	readNode(bitReader, root->left);
 
 	root->right = createNode(NO_NAME);
-	readNode(reader, root->right);
+	readNode(bitReader, root->right);
 }
 
-Node* deserializeCodingTree(BiteReader* reader) {
+Node* deserializeCodingTree(BitReader* bitReader) {
 	Node* root = createNode(NO_NAME);
-	readNode(reader, root);
+	readNode(bitReader, root);
 	return root;
 }

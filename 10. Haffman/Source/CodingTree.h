@@ -1,8 +1,8 @@
 #ifndef CODING_TREE
 #define CODING_TREE
 
-#include "BiteWriter.h"
-#include "BiteReader.h"
+#include "BitWriter.h"
+#include "BitReader.h"
 
 typedef struct Node {
 	struct Node* left;
@@ -18,8 +18,8 @@ Node* buildCodingTree(int* freq);
 
 char** generateCodes(Node* root);
 
-void serializeCodingTree(BiteWriter* writer, Node* root);
+void serializeCodingTree(BitWriter* bitWriter, Node* root);
 
-Node* deserializeCodingTree(BiteReader* reader);
+Node* deserializeCodingTree(BitReader* bitReader);
 
 #endif

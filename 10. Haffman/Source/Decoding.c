@@ -2,15 +2,15 @@
 #include <stdlib.h>
 #include "CodingTree.h"
 #include "Decoding.h"
-#include "BiteReader.h"
+#include "BitReader.h"
 
-void regainText(BiteReader* reader, Node* root, FILE* out) {
+void regainText(BitReader* bitReader, Node* root, FILE* out) {
 	Node* buf = root;
 	unsigned char bite;
 
 	while (1) {
-		bite = biteReaderDequeue(reader, 1);
-		if (reader->eofFlag) {
+		bite = bitReaderDequeue(bitReader, 1);
+		if (bitReader->eofFlag) {
 			break;
 		}
 		if ((bite) && (buf->right)) {
@@ -27,15 +27,15 @@ void regainText(BiteReader* reader, Node* root, FILE* out) {
 }
 
 void decode(FILE* in, FILE* out) {
-	BiteReader* reader = biteReaderCreate(in);
+	BitReader* bitReader = bitReaderCreate(in);
 
-	Node* codingTreeRoot = deserializeCodingTree(reader); /* Coding tree */
-	if (reader->eofFlag) { /* 'EOF' on tree deserialization (empty text) */
+	Node* codingTreeRoot = deserializeCodingTree(bitReader); /* Coding tree */
+	if (bitReader->eofFlag) { /* 'EOF' on tree deserialization (empty text) */
 		return;
 	}
-	biteReaderDequeue(reader, biteReaderDequeue(reader, 3)); /* Skips fakes.*/
-	regainText(reader, codingTreeRoot, out); /* Encoded text */
+	bitReaderDequeue(bitReader, bitReaderDequeue(bitReader, 3)); /* Skips fakes.*/
+	regainText(bitReader, codingTreeRoot, out); /* Encoded text */
 
 	destroyTree(codingTreeRoot);
-	biteReaderDestroy(reader);
+	bitReaderDestroy(bitReader);
 }

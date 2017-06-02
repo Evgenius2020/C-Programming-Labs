@@ -19,16 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\BiteReader.c" />
-    <ClCompile Include="Source\BiteWriter.c" />
+    <ClCompile Include="Source\BitReader.c" />
+    <ClCompile Include="Source\BitWriter.c" />
     <ClCompile Include="Source\CodingTree.c" />
     <ClCompile Include="Source\Decoding.c" />
     <ClCompile Include="Source\Encoding.c" />
     <ClCompile Include="Source\main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\BiteReader.h" />
-    <ClInclude Include="Source\BiteWriter.h" />
+    <ClInclude Include="Source\BitReader.h" />
+    <ClInclude Include="Source\BitWriter.h" />
     <ClInclude Include="Source\CodingTree.h" />
     <ClInclude Include="Source\Decoding.h" />
     <ClInclude Include="Source\Encoding.h" />

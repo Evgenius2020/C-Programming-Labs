@@ -2,54 +2,57 @@
 #include <stdlib.h>
 #include <string.h>
 #include "CodingTree.h"
-#include "BiteWriter.h"
+#include "BitWriter.h"
 #include "Encoding.h"
 
-/* Running a file, inserts their code to outputfile */
-void encodeText(FILE* in, BiteWriter* writer, char** codes) {
+/* Running a file, inserts their code to outputfile. */
+void encodeText(FILE* in, BitWriter* bitWriter, char** codes) {
 	short chr, i;
 	while ((chr = fgetc(in)) != EOF) {
 		for (i = 0; i < strlen(codes[chr]); i++) {
-			biteWriterEnqueue(writer, 1, codes[chr][i]);
+			bitWriterEnqueue(bitWriter, 1, codes[chr][i]);
 		}
 	}
 }
 
 void oneCharAlphabetCase(FILE* in, FILE* out, unsigned char chr, int textLength) {
-	BiteWriter* writer = biteWriterCreate(out);
-	biteWriterEnqueue(writer, 1, 1); /* Coding tree */
-	biteWriterEnqueue(writer, 8, chr);
+	BitWriter* bitWriter = bitWriterCreate(out);
+	bitWriterEnqueue(bitWriter, 1, 1); /* Coding tree */
+	bitWriterEnqueue(bitWriter, 8, chr);
 	char codeLength = (1 + 8 + 3 + textLength) % 8;
-	biteWriterEnqueue(writer, 3, (8 - codeLength) % 8); /* Number of fakes*/
-	biteWriterEnqueue(writer, (8 - codeLength) % 8, 0); /* Fakes*/
+	bitWriterEnqueue(bitWriter, 3, (8 - codeLength) % 8); /* Number of fakes*/
+	bitWriterEnqueue(bitWriter, (8 - codeLength) % 8, 0); /* Fakes*/
 	while (textLength--) {
-		biteWriterEnqueue(writer, 1, 1); /* Encoded text */
+		bitWriterEnqueue(bitWriter, 1, 1); /* Encoded text */
 	}
 }
 
 void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq) {
-	BiteWriter* writer = biteWriterCreate(out);
+	BitWriter* bitWriter = bitWriterCreate(out);
 	Node* codingTreeRoot = buildCodingTree(freq);
 	char** codes = generateCodes(codingTreeRoot);
-	serializeCodingTree(writer, codingTreeRoot); /* Coding tree build commands */
-	short freeBites = writer->bitesN;
+	serializeCodingTree(bitWriter, codingTreeRoot); /* Coding tree build commands. 
+
+	/* Fake bits calculation. */
+	char codeLength = bitWriter->bitsN; /* (Coding tree code + fakesN + fakes + encoded text) % 8 */
 	short i;
 	for (i = 0; i < 256; i++) {
         /* Uncomment to show all codes of symbols: */
 		/* printf("%s\n", codes[i]); */
 		
 		if (freq[i]) {
-			freeBites += strlen(codes[i]) * freq[i];
-			freeBites %= 8;
+			codeLength += strlen(codes[i]) * freq[i];
+			codeLength %= 8;
 		}
 	}
-	freeBites = (freeBites + 3) % 8;
-	biteWriterEnqueue(writer, 3, (8 - freeBites) % 8); /* Number of fakes*/
-	biteWriterEnqueue(writer, (8 - freeBites) % 8, 0); /* Fakes*/
-	encodeText(in, writer, codes); /* Encoded text */
+	codeLength = (codeLength + 3) % 8;
+
+	bitWriterEnqueue(bitWriter, 3, (8 - codeLength) % 8); /* Number of fakes. */
+	bitWriterEnqueue(bitWriter, (8 - codeLength) % 8, 0); /* Fakes. */
+	encodeText(in, bitWriter, codes); /* Encoded text. */
 
 	destroyTree(codingTreeRoot);
-	biteWriterDestroy(writer);
+	bitWriterDestroy(bitWriter);
 	for (i = 0; i < 256; i++) {
 		free(codes[i]);
 	}
@@ -58,9 +61,9 @@ void manyCharsAlphabetCase(FILE* in, FILE* out, int* freq) {
 
 void encode(FILE* in, FILE* out) {
 	int fileStart = ftell(in);
-	short alphabetSize = 0; /* Number of unique chars in the text */
+	short alphabetSize = 0; /* Number of unique chars in the text. */
 	int* freq = calloc(256, sizeof(int));
-	short chr; /* EOF-handling */
+	short chr; /* EOF-handling. */
 
 	while ((chr = fgetc(in)) != EOF) {
 		if (!freq[chr]) {
